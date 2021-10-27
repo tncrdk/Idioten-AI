@@ -1,4 +1,4 @@
-import GameEngine.deck as deck
+import deck
 
 
 class Player:

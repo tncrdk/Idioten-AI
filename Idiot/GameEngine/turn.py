@@ -1,5 +1,5 @@
-import GameEngine.deck as deck
-import GameEngine.player as player
+import deck
+import player
 
 # TODO timing når man plukker opp kortene på bordet
 
