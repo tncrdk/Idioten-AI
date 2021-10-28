@@ -1,8 +1,6 @@
 import GameEngine.deck as deck
 import GameEngine.player as player
 
-# TODO timing når man plukker opp kortene på bordet
-
 
 class Turn:
     def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):

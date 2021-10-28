@@ -3,8 +3,6 @@ import GameEngine.player as player
 import GameEngine.turn as turn
 
 
-# TODO Fiks når man kan velge å ikke spille
-# TODO Fire like slår ut bunken
 # TODO Lage en resultatliste
 # TODO Lage agents
 
