@@ -1,7 +1,0 @@
-{
-    "workbench.colorTheme": "Oceanic Next (Sublime)",
-    "terminal.integrated.defaultProfile.windows": "Command Prompt",
-    "files.watcherExclude": {
-        "**/target": true
-    },
-}
