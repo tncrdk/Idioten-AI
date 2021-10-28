@@ -1,6 +1,6 @@
-import deck
-import player
-import turn
+import GameEngine.deck as deck
+import GameEngine.player as player
+import GameEngine.turn as turn
 
 
 # TODO Fiks når man kan velge å ikke spille
