@@ -8,10 +8,11 @@ import turn
 
 
 class Game:
-    def __init__(self, deal_cards=True, run_game=True) -> None:
+    def __init__(self, deal_cards=True, run_game=True, agents=[]) -> None:
         self.deck = deck.Deck()
         self.pile = deck.Deck(generate_deck=False)
         self.players = []
+        self.agents = agents
         self.add_players()
         if deal_cards:
             self.deal_cards()
