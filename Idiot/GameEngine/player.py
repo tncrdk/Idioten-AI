@@ -2,12 +2,17 @@ import deck
 
 
 class Player:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name="x", agent=None) -> None:
         self.name = name
         self.table_hidden = []
         self.hand = []
         self.table_visible = []
         self.finished = False
+        if bool(agent):
+            self.agent = agent
+            self.is_agent = True
+        else:
+            self.is_agent = False
 
     def check_if_finished(self) -> bool:
         if not (self.hand or self.table_visible or self.table_hidden):

@@ -55,7 +55,10 @@ class Game:
         while not game_finished:
             for player in self.players:
                 if not player.finished:
-                    turn.Turn(player, self.deck, self.pile).player_turn()
+                    if player.is_agent:
+                        turn.AgentTurn(player, self.deck, self.pile).player_turn()
+                    else:
+                        turn.PlayerTurn(player, self.deck, self.pile).player_turn()
                     if player.finished:
                         standings.append(player.name)
 
@@ -74,6 +77,16 @@ class Game:
         if playing_players < 2:
             return True
         return False
+
+
+class AgentGame(Game):
+    def __init__(self, deal_cards=True, run_game=True) -> None:
+        super().__init__(deal_cards=deal_cards, run_game=run_game)
+
+    def add_players(self):
+        # velge hvilke typer agents
+        # bruke super().add_players så spillere kan spille mot agents
+        pass
 
 
 if __name__ == "__main__":
