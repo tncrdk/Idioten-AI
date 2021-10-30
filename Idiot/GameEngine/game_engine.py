@@ -8,11 +8,10 @@ import turn
 
 
 class Game:
-    def __init__(self, deal_cards=True, run_game=True, agents=[]) -> None:
+    def __init__(self, deal_cards=True, run_game=True) -> None:
         self.deck = deck.Deck()
         self.pile = deck.Deck(generate_deck=False)
         self.players = []
-        self.agents = agents
         self.add_players()
         if deal_cards:
             self.deal_cards()
@@ -81,8 +80,9 @@ class Game:
 
 
 class AgentGame(Game):
-    def __init__(self, deal_cards=True, run_game=True) -> None:
+    def __init__(self, deal_cards=True, run_game=True, agents=[]) -> None:
         super().__init__(deal_cards=deal_cards, run_game=run_game)
+        self.agents = agents
 
     def add_players(self):
         # velge hvilke typer agents
