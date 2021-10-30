@@ -1,5 +1,5 @@
-import GameEngine.deck as deck
-import GameEngine.player as player
+import deck
+import player
 
 
 class Turn:

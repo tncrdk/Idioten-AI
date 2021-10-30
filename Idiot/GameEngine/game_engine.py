@@ -1,6 +1,6 @@
-import GameEngine.deck as deck
-import GameEngine.player as player
-import GameEngine.turn as turn
+import deck
+import player
+import turn
 
 
 # TODO Lage en resultatliste
@@ -8,13 +8,15 @@ import GameEngine.turn as turn
 
 
 class Game:
-    def __init__(self, deal_cards=True) -> None:
+    def __init__(self, deal_cards=True, run_game=True) -> None:
         self.deck = deck.Deck()
         self.pile = deck.Deck(generate_deck=False)
         self.players = []
         self.add_players()
         if deal_cards:
             self.deal_cards()
+            if run_game:
+                self.run_game()
 
     """ 
     SETUP 
