@@ -3,22 +3,24 @@ import player
 
 
 class Turn:
-    """Dette er superklassen til AgentTurn som skal brukes når det er en AI som skal spille"""
+    """Dette er superklassen til PlayerTurn og AgentTurn som skal brukes. Denne klassen er ufullstendig"""
 
     def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):
         self.player = player
         self.deck = deck
         self.pile = pile
 
-    def player_turn(self) -> None:
+    def play_turn(self) -> None:
+        """
+        Selve turen blir spilt av en spiller. Dette er hovedfunksjonen og må bli kalt for at turen skal bli spilt
+        """
         must_play = True
         playable_cards = self.get_playable_cards()
         can_play = bool(playable_cards)
         may_build = False
 
         if not can_play:
-            self.can_not_play(playable_cards)
-            must_play = False
+            self.can_not_play_actions(playable_cards)
 
         while (must_play or may_build) and can_play:
             self.show_player_info(playable_cards)
@@ -30,9 +32,9 @@ class Turn:
             chosen_card = self.player.get_hand_card(player_input)
             self.play_card(player_input)
             must_play, may_build = self.apply_side_effects(chosen_card)
-            self.take_visible_table_cards()
+            self.take_visible_table_cards()  # Funksjonen sjekker om spilleren har mulighet også
             playable_cards = self.get_playable_cards(may_build)
-            can_play = bool(playable_cards) and self.player.hand
+            can_play = bool(playable_cards)
 
         self.restore_hand()
         self.take_hidden_table_cards()
@@ -43,6 +45,7 @@ class Turn:
     """
 
     def apply_side_effects(self, played_card: deck.Card) -> tuple:
+        """Sjekk om det skal skje noe spesielt på grunn kortet som ble spilt. Hvis ja, gjennomfør disse effektene"""
         if played_card.value == 10 or self.check_4_in_a_row():
             self.pile.clear()
             return_value = (True, False)
@@ -55,7 +58,7 @@ class Turn:
 
         return return_value
 
-    def can_not_play(self, playable_cards: list) -> None:
+    def can_not_play_actions(self, playable_cards: list) -> None:
         self.show_player_info(playable_cards)
         msg = f"{self.player.name}: Du må trekke inn kortene; vennligst bekreft ved å trykke enter"
         input(msg)
@@ -96,7 +99,7 @@ class Turn:
 
     def get_playable_cards(self, can_build=False) -> list:
         if not bool(self.pile):
-            playable_cards = list(zip(range(len(self.player.hand)), self.player.hand))
+            playable_cards = list(enumerate(self.player.hand))
             return playable_cards
 
         playable_cards = []

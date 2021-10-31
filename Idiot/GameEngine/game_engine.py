@@ -83,7 +83,7 @@ class PlayerGame(Game):
         while not game_finished:
             for player in self.players:
                 if not player.finished:
-                    turn.PlayerTurn(player, self.deck, self.pile).player_turn()
+                    turn.PlayerTurn(player, self.deck, self.pile).play_turn()
                     if player.finished:
                         standings.append(player.name)
 
