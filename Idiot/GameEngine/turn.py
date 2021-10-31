@@ -24,7 +24,7 @@ class Turn:
             self.show_player_info(playable_cards)
             player_input = self.get_player_input(playable_cards, may_build)
 
-            if player_input == "N":
+            if player_input == None:
                 break
 
             chosen_card = self.player.get_hand_card(player_input)
@@ -178,6 +178,11 @@ class PlayerTurn(Turn):
     OUTPUT
     """
 
+    def show_player_info(self, playable_cards: list) -> None:
+        self.show_player_hand()
+        self.show_playable_cards(playable_cards)
+        self.show_top_pile_card()
+
     def show_top_pile_card(self) -> None:
         if bool(self.pile):
             self.pile.get_top_card().show_card()
@@ -201,11 +206,6 @@ class PlayerTurn(Turn):
             card.show_card()
         print("-" * 20)
 
-    def show_player_info(self, playable_cards: list) -> None:
-        self.show_player_hand()
-        self.show_playable_cards(playable_cards)
-        self.show_top_pile_card()
-
     """ 
     INPUT
     """
@@ -224,7 +224,7 @@ class PlayerTurn(Turn):
                 player_input = int(player_input)
                 valid_input = self.check_if_valid_index(playable_cards, player_input)
             elif player_input.capitalize() == "N" and can_build:
-                player_input = player_input.capitalize()
+                player_input = None
                 valid_input = True
 
             if not valid_input:
