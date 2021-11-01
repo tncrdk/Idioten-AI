@@ -5,7 +5,7 @@ import player
 class Turn:
     """Dette er superklassen til PlayerTurn og AgentTurn som skal brukes. Denne klassen er ufullstendig"""
 
-    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):
+    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck) -> None:
         self.player = player
         self.deck = deck
         self.pile = pile
