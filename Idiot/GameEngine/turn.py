@@ -26,7 +26,7 @@ class Turn:
             self.show_player_info(playable_cards)
             player_input = self.get_player_input(playable_cards, may_build)
 
-            if player_input == None:
+            if player_input == "no play":
                 break
 
             chosen_card = self.player.get_hand_card(player_input)
@@ -227,7 +227,7 @@ class PlayerTurn(Turn):
                 player_input = int(player_input)
                 valid_input = self.check_if_valid_index(playable_cards, player_input)
             elif player_input.capitalize() == "N" and can_build:
-                player_input = None
+                player_input = "no play"
                 valid_input = True
 
             if not valid_input:
