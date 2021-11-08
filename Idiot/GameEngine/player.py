@@ -29,6 +29,24 @@ class Player:
     def sort_hand(self) -> None:
         self.hand.sort()
 
+    def show_hand(self) -> None:
+        print("-" * 20)
+        print(f"Player name: {self.name}")
+        print("-" * 20)
+        for index, card in enumerate(self.hand):
+            print(f"Index: {index}", end="\n    ")
+            card.show_card()
+        print("-" * 20)
+
+    def show_visible_table_cards(self) -> None:
+        print("-" * 20)
+        print(f"Table cards")
+        print("-" * 20)
+        for index, card in enumerate(self.table_visible):
+            print(f"Index: {index}", end="\n    ")
+            card.show_card()
+        print("-" * 20)
+
 
 if __name__ == "__main__":
     p1 = Player()

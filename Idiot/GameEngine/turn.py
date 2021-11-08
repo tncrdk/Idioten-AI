@@ -193,13 +193,7 @@ class PlayerTurn(Turn):
             print("Empty deck")
 
     def show_player_hand(self) -> None:
-        print("-" * 20)
-        print(f"Player name: {self.player.name}")
-        print("-" * 20)
-        for index, card in enumerate(self.player.hand):
-            print(f"Index: {index}", end="\n    ")
-            card.show_card()
-        print("-" * 20)
+        self.player.show_hand()
 
     def show_playable_cards(self, playable_cards: list) -> None:
         print("Playable cards:")
