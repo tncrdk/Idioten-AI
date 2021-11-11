@@ -1,18 +1,14 @@
 import deck
 
 
-class Player:
-    def __init__(self, name="x", agent=None) -> None:
+class AbstractPlayer:
+    def __init__(self, name="x") -> None:
         self.name = name
         self.table_hidden = []
         self.hand = []
         self.table_visible = []
         self.finished = False
-        if bool(agent):
-            self.agent = agent
-            self.is_agent = True
-        else:
-            self.is_agent = False
+        self.is_agent = False
 
     def check_if_finished(self) -> bool:
         if not (self.hand or self.table_visible or self.table_hidden):
@@ -28,6 +24,11 @@ class Player:
 
     def sort_hand(self) -> None:
         self.hand.sort()
+
+
+class Player(AbstractPlayer):
+    def __init__(self, name="x") -> None:
+        super().__init__(name=name)
 
     def show_hand(self) -> None:
         print("-" * 20)
@@ -47,6 +48,11 @@ class Player:
             print(f"Index: {index}", end="\n    ")
             card.show_card()
         print("-" * 20)
+
+
+class AgentPlayer(AbstractPlayer):
+    def __init__(self, name="x") -> None:
+        super().__init__(name=name)
 
 
 if __name__ == "__main__":

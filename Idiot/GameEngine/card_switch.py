@@ -2,7 +2,7 @@ import player
 import deck
 
 
-class CardSwitch:
+class AbstractCardSwitch:
     def __init__(self, player: player.Player) -> None:
         self.player = player
 
@@ -25,7 +25,7 @@ class CardSwitch:
         pass
 
 
-class PlayerCardSwitch(CardSwitch):
+class PlayerCardSwitch(AbstractCardSwitch):
     def __init__(self, player: player.Player) -> None:
         super().__init__(player)
 
@@ -62,7 +62,7 @@ class PlayerCardSwitch(CardSwitch):
         return done, hand_input, table_input
 
 
-class AgentCardSwitch(CardSwitch):
+class AgentCardSwitch(AbstractCardSwitch):
     def __init__(self, player: player.Player) -> None:
         super().__init__(player)
 

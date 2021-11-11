@@ -1,14 +1,14 @@
 import deck
 import player
 import turn
-import card_switch
+import card_switch as cs
 
 
 # TODO Lage en resultatliste
 # TODO Lage agents
 
 
-class Game:
+class AbstactGame:
     def __init__(self, deal_cards=True, run_game=True) -> None:
         self.deck = deck.Deck()
         self.pile = deck.Deck(generate_deck=False)
@@ -51,7 +51,7 @@ class Game:
         return False
 
 
-class PlayerGame(Game):
+class PlayerGame(AbstactGame):
     def __init__(self, deal_cards=True, run_game=True) -> None:
         super().__init__(deal_cards=deal_cards, run_game=run_game)
 
@@ -81,6 +81,11 @@ class PlayerGame(Game):
         game_finished = False
         standings = []
 
+        for player in self.players:
+            input(f"Card switches for {player.name}. ")
+            cs.PlayerCardSwitch(player).switch()
+
+        input("Spillet begynner. ")
         while not game_finished:
             for player in self.players:
                 if not player.finished:
@@ -96,7 +101,7 @@ class PlayerGame(Game):
         print("done")
 
 
-class AgentGame(Game):
+class AgentGame(AbstactGame):
     def __init__(self, deal_cards=True, run_game=True, agents=[]) -> None:
         super().__init__(deal_cards=deal_cards, run_game=run_game)
         self.agents = agents

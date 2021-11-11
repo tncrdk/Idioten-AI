@@ -2,7 +2,7 @@ import deck
 import player
 
 
-class Turn:
+class AbstractTurn:
     """Dette er superklassen til PlayerTurn og AgentTurn som skal brukes. Denne klassen er ufullstendig"""
 
     def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck) -> None:
@@ -173,7 +173,7 @@ class Turn:
         pass
 
 
-class PlayerTurn(Turn):
+class PlayerTurn(AbstractTurn):
     def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):
         super().__init__(player, deck, pile)
 
@@ -231,7 +231,7 @@ class PlayerTurn(Turn):
         return player_input
 
 
-class AgentTurn(Turn):
+class AgentTurn(AbstractTurn):
     def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck, agent):
         super().__init__(player, deck, pile)
         self.agent = agent
