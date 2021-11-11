@@ -1,6 +1,7 @@
 import deck
 import player
 import turn
+import card_switch
 
 
 # TODO Lage en resultatliste

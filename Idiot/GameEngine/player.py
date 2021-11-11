@@ -32,6 +32,7 @@ class Player:
     def show_hand(self) -> None:
         print("-" * 20)
         print(f"Player name: {self.name}")
+        print("Hand cards")
         print("-" * 20)
         for index, card in enumerate(self.hand):
             print(f"Index: {index}", end="\n    ")

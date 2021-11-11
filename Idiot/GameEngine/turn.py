@@ -35,8 +35,8 @@ class Turn:
             self.take_visible_table_cards()  # Funksjonen sjekker om spilleren har mulighet også
             playable_cards = self.get_playable_cards(may_build)
             can_play = bool(playable_cards)
+            self.restore_hand()
 
-        self.restore_hand()
         self.take_hidden_table_cards()
         self.player.check_if_finished()
 
