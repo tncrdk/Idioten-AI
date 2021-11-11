@@ -48,15 +48,13 @@ class AbstractTurn:
         """Sjekk om det skal skje noe spesielt på grunn kortet som ble spilt. Hvis ja, gjennomfør disse effektene"""
         if played_card.value == 10 or self.check_4_in_a_row():
             self.pile.clear()
-            return_value = (True, False)
+            return (True, False)
 
         elif played_card.value == 2:
-            return_value = (True, False)
+            return (True, False)
 
         else:
-            return_value = (False, True)
-
-        return return_value
+            return (False, True)
 
     def can_not_play_actions(self, playable_cards: list) -> None:
         self.show_player_info(playable_cards)
@@ -232,9 +230,8 @@ class PlayerTurn(AbstractTurn):
 
 
 class AgentTurn(AbstractTurn):
-    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck, agent):
+    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):
         super().__init__(player, deck, pile)
-        self.agent = agent
 
     """
     OUTPUT
@@ -250,25 +247,4 @@ class AgentTurn(AbstractTurn):
     """
 
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
-        # valid_input = False
-
-        # while not valid_input:
-        #     if can_build:
-        #         print("Du kan velge å ikke spille; (N)")
-
-        #     player_input = input("Hvilken indeks? ")
-        #     valid_input = False
-
-        #     if player_input.isdigit():
-        #         player_input = int(player_input)
-        #         valid_input = self.check_if_valid_index(playable_cards, player_input)
-        #     elif player_input.capitalize() == "N" and can_build:
-        #         player_input = player_input.capitalize()
-        #         valid_input = True
-
-        #     if not valid_input:
-        #         print("Ikke gyldig input")
-
-        # print("\n" * 2)
-        # return player_input
         pass

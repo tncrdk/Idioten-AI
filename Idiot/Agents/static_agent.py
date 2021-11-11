@@ -1,5 +1,5 @@
 import agent
 
 
-class StaticAgent(agent.Agent):
+class StaticAgent(agent.AbstractAgent):
     pass

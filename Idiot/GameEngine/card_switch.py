@@ -1,5 +1,4 @@
 import player
-import deck
 
 
 class AbstractCardSwitch:
