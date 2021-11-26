@@ -1,3 +1,3 @@
 class AbstractAgent:
-    def feed_data(data: list):
+    def get_output(data: list):
         pass

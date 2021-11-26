@@ -51,8 +51,9 @@ class Player(AbstractPlayer):
 
 
 class AgentPlayer(AbstractPlayer):
-    def __init__(self, name="x") -> None:
+    def __init__(self, agent, name="x") -> None:
         super().__init__(name=name)
+        self.agent = agent
 
 
 if __name__ == "__main__":
