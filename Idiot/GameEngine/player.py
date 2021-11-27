@@ -1,4 +1,6 @@
+import import_agents
 import deck
+import agent
 
 
 class AbstractPlayer:
@@ -51,7 +53,7 @@ class Player(AbstractPlayer):
 
 
 class AgentPlayer(AbstractPlayer):
-    def __init__(self, agent, name="x") -> None:
+    def __init__(self, agent: agent.AbstractAgent, name="x") -> None:
         super().__init__(name=name)
         self.agent = agent
 

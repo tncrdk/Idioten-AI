@@ -1,5 +1,6 @@
 import deck
 import player
+import Agent_path
 
 
 class AbstractTurn:
@@ -230,7 +231,7 @@ class PlayerTurn(AbstractTurn):
 
 
 class AgentTurn(AbstractTurn):
-    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):
+    def __init__(self, player: player.AgentPlayer, deck: deck.Deck, pile: deck.Deck):
         super().__init__(player, deck, pile)
 
     """
@@ -239,12 +240,18 @@ class AgentTurn(AbstractTurn):
 
     def show_player_info(self, playable_cards: list) -> None:
         """Gir info som spillet til spilleren. Det er denne som er kalt i run_game()"""
-
-        self.player.agent.feed_data()  # formater dataene som skal sendes til agenten
+        input_data = {
+            "hand_cards": self.player.hand,
+            "playable_cards": self.playable_cards,
+            "table_cards": self.player.table_visible,
+            "pile": self.pile,
+        }
+        # formater dataene som skal sendes til agenten
+        self.player.agent.process_input(input_data)
 
     """ 
     INPUT
     """
 
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
-        pass
+        return self.player.agent.return_output()
