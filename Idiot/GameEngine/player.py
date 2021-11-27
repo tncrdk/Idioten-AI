@@ -1,4 +1,4 @@
-import import_agents
+import agent_path
 import deck
 import agent
 

@@ -1,15 +1,22 @@
 import deck
 import player
-import Agent_path
+import agent_path
 
 
 class AbstractTurn:
     """Dette er superklassen til PlayerTurn og AgentTurn som skal brukes. Denne klassen er ufullstendig"""
 
-    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck) -> None:
+    def __init__(
+        self,
+        player: player.Player,
+        deck: deck.Deck,
+        pile: deck.Deck,
+        burnt_cards: deck.Deck,
+    ) -> None:
         self.player = player
         self.deck = deck
         self.pile = pile
+        self.burnt_cards = burnt_cards
 
     def play_turn(self) -> None:
         """
@@ -48,6 +55,7 @@ class AbstractTurn:
     def apply_side_effects(self, played_card: deck.Card) -> tuple:
         """Sjekk om det skal skje noe spesielt på grunn kortet som ble spilt. Hvis ja, gjennomfør disse effektene"""
         if played_card.value == 10 or self.check_4_in_a_row():
+            self.burnt_cards += self.pile
             self.pile.clear()
             return (True, False)
 
@@ -173,8 +181,14 @@ class AbstractTurn:
 
 
 class PlayerTurn(AbstractTurn):
-    def __init__(self, player: player.Player, deck: deck.Deck, pile: deck.Deck):
-        super().__init__(player, deck, pile)
+    def __init__(
+        self,
+        player: player.Player,
+        deck: deck.Deck,
+        pile: deck.Deck,
+        burnt_cards: deck.Deck,
+    ):
+        super().__init__(player, deck, pile, burnt_cards)
 
     """
     OUTPUT
@@ -245,8 +259,8 @@ class AgentTurn(AbstractTurn):
             "playable_cards": self.playable_cards,
             "table_cards": self.player.table_visible,
             "pile": self.pile,
+            "burnt_cards": self.burnt_cards,
         }
-        # formater dataene som skal sendes til agenten
         self.player.agent.process_input(input_data)
 
     """ 
