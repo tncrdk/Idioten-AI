@@ -107,13 +107,31 @@ class AgentGame(AbstactGame):
         self.agents = agents
 
     def add_players(self):
-        # velge hvilke typer agents
+        if len(self.agents) > 5:
+            raise ValueError("For mange spillee")
+        elif len(self.agents) < 2:
+            raise ValueError("For få spillere")
+
+        for agent in self.agents:
+            self.players.append(player.AgentPlayer(agent))
         # bruke super().add_players så spillere kan spille mot agents
-        pass
 
     def run_game(self):
-        # noen små justeringer må gjøres
-        pass
+        game_finished = False
+        standings = []
+
+        while not game_finished:
+            for player in self.players:
+                if not player.finished:
+                    turn.AgentTurn(player, self.deck, self.pile).play_turn()
+                    if player.finished:
+                        standings.append(player)
+
+                game_finished = self.check_if_game_finished()
+                if game_finished:
+                    break
+
+        # gjør noe med belønninger
 
 
 if __name__ == "__main__":
