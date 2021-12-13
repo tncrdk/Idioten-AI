@@ -57,9 +57,6 @@ class AgentPlayer(AbstractPlayer):
         super().__init__(name=name)
         self.policy = agent
 
-    def process_input(self, data):
-        self.policy.process_input(data)
-
 
 if __name__ == "__main__":
     p1 = Player()

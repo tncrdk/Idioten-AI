@@ -9,15 +9,14 @@ data = {
     "table_cards": [...],
     "pile: [...]",
     "played_cards": [...],
-    "burnt_cards": [...]
+    "burnt_cards": [...],
 }
 """
 
 
 class PlayLowAgent1(agent.AbstractAgent):
-    def __init__(self) -> None:
-        super().__init__()
-        self.name = "PlayLow1"
+    def __init__(self, name="PlayLow1") -> None:
+        super().__init__(name)
 
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
@@ -34,10 +33,34 @@ class PlayLowAgent1(agent.AbstractAgent):
         return smallest_card_index
 
 
+class PlayLowSave1(agent.AbstractAgent):
+    def __init__(self, name="PlayLowSaving") -> None:
+        super().__init__(name)
+
+    def process_input(self, data: dict) -> None:
+        playable_cards = data["playable_cards"]
+        must_play = data["must_play"]
+        if bool(playable_cards):
+            self.output = self.choose_card(playable_cards, must_play)
+
+    def choose_card(self, playable_cards, must_play) -> int:
+        cards_sorted = sorted([(card, index) for index, card in playable_cards])
+        if must_play:
+            for card, index in cards_sorted:
+                if card.value not in {2, 10}:
+                    return index
+            return cards_sorted[0][1]
+        elif len(cards_sorted) > 1:
+            for card, index in cards_sorted:
+                if card.value not in {2, 10}:
+                    return index
+
+        # TODO er ikke ferdig, må testes
+
+
 class PlayHighAgent1(agent.AbstractAgent):
-    def __init__(self) -> None:
-        super().__init__()
-        self.name = "PlayHigh1"
+    def __init__(self, name="PlayHigh1") -> None:
+        super().__init__(name)
 
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")

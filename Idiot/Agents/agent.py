@@ -13,8 +13,9 @@ data = {
 
 
 class AbstractAgent:
-    def __init__(self) -> None:
-        self.output = None
+    def __init__(self, name="AbstractAgent") -> None:
+        self.output = "N"
+        self.name = name
 
     def process_input(self) -> None:
         """Choose best play according to the policy"""

@@ -59,11 +59,3 @@ class PlayerCardSwitch(AbstractCardSwitch):
                 return done, None, None
 
         return done, hand_input, table_input
-
-
-class AgentCardSwitch(AbstractCardSwitch):
-    def __init__(self, player: player.Player) -> None:
-        super().__init__(player)
-
-    def get_player_input(self) -> None:
-        pass

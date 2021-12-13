@@ -31,7 +31,7 @@ class AbstractTurn:
             self.can_not_play_actions(playable_cards)
 
         while (must_play or may_build) and can_play:
-            self.show_player_info(playable_cards)
+            self.show_player_info(playable_cards, must_play)
             player_input = self.get_player_input(playable_cards, may_build)
 
             if player_input == "no play":
@@ -207,7 +207,7 @@ class PlayerTurn(AbstractTurn):
     OUTPUT
     """
 
-    def show_player_info(self, playable_cards: list) -> None:
+    def show_player_info(self, playable_cards: list, must_play) -> None:
         self.show_player_hand()
         self.show_playable_cards(playable_cards)
         self.show_top_pile_card()
@@ -293,7 +293,7 @@ class AgentTurn(AbstractTurn):
     OUTPUT
     """
 
-    def show_player_info(self, playable_cards: list) -> None:
+    def show_player_info(self, playable_cards: list, must_play: bool) -> None:
         """Gir info som spillet til spilleren. Det er denne som er kalt i run_game()"""
         input_data = {
             "hand_cards": self.player.hand,
@@ -301,6 +301,7 @@ class AgentTurn(AbstractTurn):
             "table_cards": self.player.table_visible,
             "pile": self.pile,
             "burnt_cards": self.burnt_cards,
+            "must_play": must_play,
         }
         self.player.policy.process_input(input_data)
 

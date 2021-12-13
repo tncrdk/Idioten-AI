@@ -142,6 +142,6 @@ class AgentGame(AbstactGame):
 
 
 if __name__ == "__main__":
-    agents = [sa.PlayLowAgent1, sa.PlayHighAgent1]
+    agents = [sa.PlayLowAgent1(), sa.PlayHighAgent1()]
     main_game = AgentGame(agents=agents)
     main_game.run_game()
