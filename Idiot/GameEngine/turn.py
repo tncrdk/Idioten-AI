@@ -66,11 +66,7 @@ class AbstractTurn:
             return (False, True)
 
     def can_not_play_actions(self, playable_cards: list) -> None:
-        self.show_player_info(playable_cards)
-        msg = f"{self.player.name}: Du må trekke inn kortene; vennligst bekreft ved å trykke enter"
-        input(msg)
-        print("\n" * 2)
-        self.take_pile()
+        pass
 
     def play_card(self, index: int):
         self.pile.add_card(self.player.play_hand_card(index))
@@ -85,20 +81,10 @@ class AbstractTurn:
         self.pile.clear()
 
     def take_visible_table_cards(self) -> None:
-        if not (self.deck or self.player.hand) and self.player.table_visible:
-            input("Taking visible table cards; press enter")
-            self.player.hand += self.player.table_visible
-            self.player.table_visible.clear()
-        self.player.check_if_finished()
+        pass
 
     def take_hidden_table_cards(self) -> None:
-        if (
-            not (self.deck or self.player.hand or self.player.table_visible)
-            and self.player.table_hidden
-        ):
-            input("Taking random face-down card; press enter")
-            self.player.hand.append(self.player.table_hidden.pop())
-        self.player.check_if_finished()
+        pass
 
     """
     GET-FUNCTIONS
@@ -190,6 +176,33 @@ class PlayerTurn(AbstractTurn):
     ):
         super().__init__(player, deck, pile, burnt_cards)
 
+    """ 
+    ACTIONS
+    """
+
+    def can_not_play_actions(self, playable_cards: list) -> None:
+        self.show_player_info(playable_cards)
+        msg = f"{self.player.name}: Du må trekke inn kortene; vennligst bekreft ved å trykke enter"
+        input(msg)
+        print("\n" * 2)
+        self.take_pile()
+
+    def take_visible_table_cards(self) -> None:
+        if not (self.deck or self.player.hand) and self.player.table_visible:
+            input("Taking visible table cards; press enter")
+            self.player.hand += self.player.table_visible
+            self.player.table_visible.clear()
+        self.player.check_if_finished()
+
+    def take_hidden_table_cards(self) -> None:
+        if (
+            not (self.deck or self.player.hand or self.player.table_visible)
+            and self.player.table_hidden
+        ):
+            input("Taking random face-down card; press enter")
+            self.player.hand.append(self.player.table_hidden.pop())
+        self.player.check_if_finished()
+
     """
     OUTPUT
     """
@@ -245,8 +258,36 @@ class PlayerTurn(AbstractTurn):
 
 
 class AgentTurn(AbstractTurn):
-    def __init__(self, player: player.AgentPlayer, deck: deck.Deck, pile: deck.Deck):
-        super().__init__(player, deck, pile)
+    def __init__(
+        self,
+        player: player.AgentPlayer,
+        deck: deck.Deck,
+        pile: deck.Deck,
+        burnt_cards: deck.Deck,
+    ):
+        super().__init__(player, deck, pile, burnt_cards)
+
+    """
+    ACTIONS
+    """
+
+    def can_not_play_actions(self, playable_cards: list) -> None:
+        self.show_player_info(playable_cards)
+        self.take_pile()
+
+    def take_visible_table_cards(self) -> None:
+        if not (self.deck or self.player.hand) and self.player.table_visible:
+            self.player.hand += self.player.table_visible
+            self.player.table_visible.clear()
+        self.player.check_if_finished()
+
+    def take_hidden_table_cards(self) -> None:
+        if (
+            not (self.deck or self.player.hand or self.player.table_visible)
+            and self.player.table_hidden
+        ):
+            self.player.hand.append(self.player.table_hidden.pop())
+        self.player.check_if_finished()
 
     """
     OUTPUT
@@ -256,16 +297,16 @@ class AgentTurn(AbstractTurn):
         """Gir info som spillet til spilleren. Det er denne som er kalt i run_game()"""
         input_data = {
             "hand_cards": self.player.hand,
-            "playable_cards": self.playable_cards,
+            "playable_cards": playable_cards,
             "table_cards": self.player.table_visible,
             "pile": self.pile,
             "burnt_cards": self.burnt_cards,
         }
-        self.player.agent.process_input(input_data)
+        self.player.policy.process_input(input_data)
 
     """ 
     INPUT
     """
 
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
-        return self.player.agent.return_output()
+        return self.player.policy.return_output()

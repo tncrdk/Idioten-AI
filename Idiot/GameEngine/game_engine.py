@@ -2,6 +2,7 @@ import deck
 import player
 import turn
 import card_switch as cs
+import static_agents as sa
 
 
 # TODO Lage en resultatliste
@@ -103,8 +104,8 @@ class PlayerGame(AbstactGame):
 
 class AgentGame(AbstactGame):
     def __init__(self, deal_cards=True, run_game=True, agents=[]) -> None:
-        super().__init__(deal_cards=deal_cards, run_game=run_game)
         self.agents = agents
+        super().__init__(deal_cards=deal_cards, run_game=run_game)
 
     def add_players(self):
         if len(self.agents) > 5:
@@ -119,21 +120,28 @@ class AgentGame(AbstactGame):
     def run_game(self):
         game_finished = False
         standings = []
+        burnt_cards = []
+        turn_number = 0
 
         while not game_finished:
+            turn_number += 1
             for player in self.players:
                 if not player.finished:
-                    turn.AgentTurn(player, self.deck, self.pile).play_turn()
+                    turn.AgentTurn(
+                        player, self.deck, self.pile, burnt_cards
+                    ).play_turn()
                     if player.finished:
                         standings.append(player)
-
-                game_finished = self.check_if_game_finished()
+                game_finished = self.check_if_game_finished() or turn_number >= 10000
                 if game_finished:
                     break
-
+        # if bool(standings):
+        #     print(standings[0].policy.name)
+        # print(turn_number)
         # gjør noe med belønninger
 
 
 if __name__ == "__main__":
-    main_game = PlayerGame()
+    agents = [sa.PlayLowAgent1, sa.PlayHighAgent1]
+    main_game = AgentGame(agents=agents)
     main_game.run_game()

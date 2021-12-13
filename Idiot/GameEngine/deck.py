@@ -23,10 +23,10 @@ class Card:
         self.symbol = self.SYMBOLS[value - 2]
 
     def __gt__(self, other):
-        return self.value > other.value
+        return self.value > other
 
     def __lt__(self, other):
-        return self.value < other.value
+        return self.value < other
 
     def show_card(self) -> None:
         print(f"{self.symbol} of {self.suit.value} ({self.value})")

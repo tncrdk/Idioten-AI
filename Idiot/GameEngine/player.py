@@ -55,7 +55,10 @@ class Player(AbstractPlayer):
 class AgentPlayer(AbstractPlayer):
     def __init__(self, agent: agent.AbstractAgent, name="x") -> None:
         super().__init__(name=name)
-        self.agent = agent
+        self.policy = agent
+
+    def process_input(self, data):
+        self.policy.process_input(data)
 
 
 if __name__ == "__main__":

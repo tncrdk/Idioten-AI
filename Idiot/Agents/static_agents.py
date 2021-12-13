@@ -17,6 +17,7 @@ data = {
 class PlayLowAgent1(agent.AbstractAgent):
     def __init__(self) -> None:
         super().__init__()
+        self.name = "PlayLow1"
 
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
@@ -36,6 +37,7 @@ class PlayLowAgent1(agent.AbstractAgent):
 class PlayHighAgent1(agent.AbstractAgent):
     def __init__(self) -> None:
         super().__init__()
+        self.name = "PlayHigh1"
 
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
