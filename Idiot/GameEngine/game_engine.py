@@ -138,6 +138,7 @@ class AgentGame(AbstactGame):
         # if bool(standings):
         #     print(standings[0].policy.name)
         # print(turn_number)
+        return standings[0].policy.name
         # gjør noe med belønninger
 
 

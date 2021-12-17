@@ -10,6 +10,7 @@ data = {
     "pile: [...]",
     "played_cards": [...],
     "burnt_cards": [...],
+    "must_play": False
 }
 """
 
@@ -33,15 +34,20 @@ class PlayLowAgent1(agent.AbstractAgent):
         return smallest_card_index
 
 
-class PlayLowSave1(agent.AbstractAgent):
+class PlayLowSaveAgent1(agent.AbstractAgent):
     def __init__(self, name="PlayLowSaving") -> None:
         super().__init__(name)
+        self.prior_hand = None
 
     def process_input(self, data: dict) -> None:
         playable_cards = data["playable_cards"]
         must_play = data["must_play"]
         if bool(playable_cards):
-            self.output = self.choose_card(playable_cards, must_play)
+            output = self.choose_card(playable_cards, must_play)
+            if output != None:
+                self.output = output
+            else:
+                self.output = "no play"
 
     def choose_card(self, playable_cards, must_play) -> int:
         cards_sorted = sorted([(card, index) for index, card in playable_cards])
@@ -50,10 +56,13 @@ class PlayLowSave1(agent.AbstractAgent):
                 if card.value not in {2, 10}:
                     return index
             return cards_sorted[0][1]
-        elif len(cards_sorted) > 1:
-            for card, index in cards_sorted:
-                if card.value not in {2, 10}:
-                    return index
+
+        for card, index in cards_sorted:
+            if card.value not in {2, 10}:
+                return index
+
+        if len(cards_sorted) > 1:
+            return cards_sorted[0][1]
 
         # TODO er ikke ferdig, må testes
 

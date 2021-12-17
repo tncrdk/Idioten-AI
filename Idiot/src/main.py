@@ -15,10 +15,17 @@ data = {
 """
 start = time.time()
 
-agents = [sa.PlayLowAgent1(), sa.PlayLowAgent1()]
+agents1 = [sa.PlayLowAgent1(), sa.PlayLowAgent1()]
+agents2 = [sa.PlayLowSaveAgent1("a"), sa.PlayLowAgent1("b")]
+
+results = {agents2[0].name: 0, agents2[1].name: 0}
 
 for i in range(1000):
-    main_game = ge.AgentGame(agents=agents)
+    main_game = ge.AgentGame(agents=agents2, run_game=False)
+    standings = main_game.run_game()
+    results[standings] += 1
 
+# main_game = ge.AgentGame(agents=agents2)
+print(results)
 tot_time = time.time() - start
 print(f"Total tid: {tot_time}")

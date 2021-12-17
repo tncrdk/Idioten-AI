@@ -14,7 +14,7 @@ data = {
 
 class AbstractAgent:
     def __init__(self, name="AbstractAgent") -> None:
-        self.output = "N"
+        self.output = "no play"  # SKal være indeksen til kortet som skal spilles
         self.name = name
 
     def process_input(self) -> None:

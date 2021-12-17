@@ -28,7 +28,7 @@ class AbstractTurn:
         may_build = False
 
         if not can_play:
-            self.can_not_play_actions(playable_cards)
+            self.can_not_play_actions(playable_cards, must_play)
 
         while (must_play or may_build) and can_play:
             self.show_player_info(playable_cards, must_play)
@@ -180,8 +180,8 @@ class PlayerTurn(AbstractTurn):
     ACTIONS
     """
 
-    def can_not_play_actions(self, playable_cards: list) -> None:
-        self.show_player_info(playable_cards)
+    def can_not_play_actions(self, playable_cards: list, must_play) -> None:
+        self.show_player_info(playable_cards, must_play)
         msg = f"{self.player.name}: Du må trekke inn kortene; vennligst bekreft ved å trykke enter"
         input(msg)
         print("\n" * 2)
@@ -271,8 +271,8 @@ class AgentTurn(AbstractTurn):
     ACTIONS
     """
 
-    def can_not_play_actions(self, playable_cards: list) -> None:
-        self.show_player_info(playable_cards)
+    def can_not_play_actions(self, playable_cards: list, must_play) -> None:
+        self.show_player_info(playable_cards, must_play)
         self.take_pile()
 
     def take_visible_table_cards(self) -> None:
@@ -303,6 +303,10 @@ class AgentTurn(AbstractTurn):
             "burnt_cards": self.burnt_cards,
             "must_play": must_play,
         }
+        # print(self.player.policy.name)
+        # if len(self.pile) >= 1:
+        #     print(self.pile[-1].value)
+        # print([(i[0], i[1].value) for i in input_data["playable_cards"]])
         self.player.policy.process_input(input_data)
 
     """ 
@@ -310,4 +314,6 @@ class AgentTurn(AbstractTurn):
     """
 
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
+        # print(self.player.policy.return_output())
+        # print("-" * 10)
         return self.player.policy.return_output()
