@@ -64,8 +64,6 @@ class PlayLowSaveAgent1(agent.AbstractAgent):
         if len(cards_sorted) > 1:
             return cards_sorted[0][1]
 
-        # TODO er ikke ferdig, må testes
-
 
 class PlayHighAgent1(agent.AbstractAgent):
     def __init__(self, name="PlayHigh1") -> None:
