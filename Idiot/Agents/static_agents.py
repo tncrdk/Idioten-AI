@@ -1,4 +1,5 @@
 import agent
+from numpy.random import randint
 
 """
 Format på input:
@@ -84,5 +85,18 @@ class PlayHighAgent1(agent.AbstractAgent):
         return highest_card_index
 
 
+class RandomAgent(agent.AbstractAgent):
+    def __init__(self, name="Random") -> None:
+        super().__init__(name=name)
+
+    def process_input(self, data: dict) -> None:
+        playable_cards = data["playable_cards"]
+        rand_index = randint(len(playable_cards))
+        self.output = playable_cards[rand_index][0]
+
+
 if __name__ == "__main__":
-    a = PlayLowAgent1()
+    data = {"playable_cards": [(0, 8), (1, 8), (2, 8), (3, 9), (4, 9), (5, 9)]}
+    a = RandomAgent()
+    a.process_input(data)
+    print(a.return_output())

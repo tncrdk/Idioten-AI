@@ -17,7 +17,7 @@ class AbstractAgent:
         self.output = "no play"  # SKal være indeksen til kortet som skal spilles
         self.name = name
 
-    def process_input(self) -> None:
+    def process_input(self, data: dict) -> None:
         """Choose best play according to the policy"""
         pass
 
