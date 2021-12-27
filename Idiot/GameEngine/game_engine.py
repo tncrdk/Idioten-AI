@@ -81,6 +81,7 @@ class PlayerGame(AbstactGame):
     def run_game(self):
         game_finished = False
         standings = []
+        burnt_cards = []
 
         for player in self.players:
             input(f"Card switches for {player.name}. ")
@@ -90,7 +91,9 @@ class PlayerGame(AbstactGame):
         while not game_finished:
             for player in self.players:
                 if not player.finished:
-                    turn.PlayerTurn(player, self.deck, self.pile).play_turn()
+                    turn.PlayerTurn(
+                        player, self.deck, self.pile, burnt_cards
+                    ).play_turn()
                     if player.finished:
                         standings.append(player.name)
 
@@ -109,7 +112,7 @@ class AgentGame(AbstactGame):
 
     def add_players(self):
         if len(self.agents) > 5:
-            raise ValueError("For mange spillee")
+            raise ValueError("For mange spillere")
         elif len(self.agents) < 2:
             raise ValueError("For få spillere")
 

@@ -1,6 +1,7 @@
 import deck
 import player
 import agent_path
+from numpy.random import randint
 
 
 class AbstractTurn:
@@ -32,12 +33,11 @@ class AbstractTurn:
 
         while (must_play or may_build) and can_play:
             self.show_player_info(playable_cards, must_play)
-            player_input = self.get_player_input(playable_cards, may_build)
+            player_input, chosen_card = self.get_player_input(playable_cards, may_build)
 
-            if player_input == "no play":
+            if player_input == "n":
                 break
 
-            chosen_card = self.player.get_hand_card(player_input)
             self.play_card(player_input)
             must_play, may_build = self.apply_side_effects(chosen_card)
             self.take_visible_table_cards()  # Funksjonen sjekker om spilleren har mulighet også
@@ -235,6 +235,7 @@ class PlayerTurn(AbstractTurn):
 
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
         valid_input = False
+        chosen_card = None
 
         while not valid_input:
             if can_build:
@@ -247,14 +248,16 @@ class PlayerTurn(AbstractTurn):
                 player_input = int(player_input)
                 valid_input = self.check_if_valid_index(playable_cards, player_input)
             elif player_input.capitalize() == "N" and can_build:
-                player_input = "no play"
+                player_input = "n"
                 valid_input = True
 
             if not valid_input:
                 print("Ikke gyldig input")
+        if player_input != "n":
+            chosen_card = self.player.get_hand_card(player_input)
 
         print("\n" * 2)
-        return player_input
+        return player_input, chosen_card
 
 
 class AgentTurn(AbstractTurn):
@@ -290,6 +293,16 @@ class AgentTurn(AbstractTurn):
         self.player.check_if_finished()
 
     """
+    GET-FUNCTIONS
+    """
+
+    def find_card(self, value: int, playable_cards: list) -> tuple:
+        for index, card in playable_cards:
+            if value == card.value:
+                return index, card, True
+        return None, None, False
+
+    """
     OUTPUT
     """
 
@@ -316,4 +329,26 @@ class AgentTurn(AbstractTurn):
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
         # print(self.player.policy.return_output())
         # print("-" * 10)
-        return self.player.policy.return_output()
+        """return_output format = (output, safe_index?)"""
+
+        chosen_card = None
+        player_input, safe = self.player.policy.return_output()
+
+        if safe:
+            if player_input != "n":
+                chosen_card = self.player.get_hand_card(player_input)
+            return player_input, chosen_card
+
+        for _ in range(20):
+            if player_input == "n" and can_build:
+                return player_input, chosen_card
+
+            index, card, valid = self.find_card(player_input, playable_cards)
+            if valid:
+                return index, card
+
+            self.player.policy.add_reward(-10)
+            player_input, safe = self.player.policy.return_output()
+
+        rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
+        return rand_ind, rand_card
