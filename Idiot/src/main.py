@@ -20,7 +20,7 @@ agents2 = [sa.PlayLowSaveAgent1("a"), sa.PlayLowSaveAgent1("b"), sa.PlayLowAgent
 
 results = {agents2[0].name: 0, agents2[1].name: 0, agents2[2].name: 0}
 
-for i in range(1000):
+for i in range(100):
     main_game = ge.AgentGame(agents=agents2, run_game=False)
     standings = main_game.run_game()
     results[standings] += 1

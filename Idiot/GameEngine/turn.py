@@ -339,7 +339,7 @@ class AgentTurn(AbstractTurn):
                 chosen_card = self.player.get_hand_card(player_input)
             return player_input, chosen_card
 
-        for _ in range(20):
+        else:
             if player_input == "n" and can_build:
                 return player_input, chosen_card
 
@@ -348,7 +348,6 @@ class AgentTurn(AbstractTurn):
                 return index, card
 
             self.player.policy.add_reward(-10)
-            player_input, safe = self.player.policy.return_output()
 
         rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
         return rand_ind, rand_card
