@@ -56,4 +56,14 @@ class NEAT_Agent1(AbstractNEAT_Agent):
         super().__init__(genome, network, name=name)
 
     def format_data(self, data: dict):
-        pass
+        player_hand = data["hand"]
+        input_data = [0 for i in range(13)]
+
+        for card in player_hand:
+            input_data[card.value - 2] += 1
+
+        must_play = 1 if data["must_play"] else 0
+        pile_card = data["pile"].get_top_card()
+        input_data += [must_play, pile_card]
+
+        return input_data

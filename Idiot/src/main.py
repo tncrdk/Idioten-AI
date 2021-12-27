@@ -16,9 +16,9 @@ data = {
 start = time.time()
 
 agents1 = [sa.PlayLowAgent1(), sa.PlayLowAgent1()]
-agents2 = [sa.PlayLowSaveAgent1("a"), sa.PlayLowSaveAgent1("b"), sa.PlayLowAgent1("c")]
+agents2 = [sa.PlayLowSaveAgent1("a"), sa.RandomAgent("c")]
 
-results = {agents2[0].name: 0, agents2[1].name: 0, agents2[2].name: 0}
+results = {agents2[0].name: 0, agents2[1].name: 0}
 
 for i in range(100):
     main_game = ge.AgentGame(agents=agents2, run_game=False)

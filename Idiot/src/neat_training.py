@@ -19,7 +19,9 @@ data = {
 
 
 def eval_genomes(genomes, config):
-    pass
+    for _, genome in genomes:
+        for _ in range(100):
+            pass
 
 
 def main(config_path):

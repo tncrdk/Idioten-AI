@@ -44,7 +44,6 @@ class AbstractTurn:
             playable_cards = self.get_playable_cards(may_build)
             can_play = bool(playable_cards)
             self.restore_hand()
-
         self.take_hidden_table_cards()
         self.player.check_if_finished()
 
@@ -275,7 +274,6 @@ class AgentTurn(AbstractTurn):
     """
 
     def can_not_play_actions(self, playable_cards: list, must_play) -> None:
-        self.show_player_info(playable_cards, must_play)
         self.take_pile()
 
     def take_visible_table_cards(self) -> None:
@@ -347,7 +345,7 @@ class AgentTurn(AbstractTurn):
             if valid:
                 return index, card
 
-            self.player.policy.add_reward(-10)
+            self.player.policy.add_reward(-30)
 
         rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
         return rand_ind, rand_card

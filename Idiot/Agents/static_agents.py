@@ -91,7 +91,8 @@ class RandomAgent(agent.AbstractAgent):
 
     def process_input(self, data: dict) -> None:
         playable_cards = data["playable_cards"]
-        rand_index = randint(len(playable_cards))
+        length = len(playable_cards)
+        rand_index = randint(0, length)
         self.output = (playable_cards[rand_index][0], True)
 
 
