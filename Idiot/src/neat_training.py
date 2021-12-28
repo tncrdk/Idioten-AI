@@ -6,6 +6,8 @@ import time
 import os
 import neat
 
+from turn import AgentTurn
+
 """
 data = {
     "hand_cards": [...],
@@ -19,9 +21,19 @@ data = {
 
 
 def eval_genomes(genomes, config):
+    agents = [sa.RandomAgent()]
     for _, genome in genomes:
-        for _ in range(100):
-            pass
+        network = neat.nn.FeedForwardNetwork.create(genome, config)
+        agents.append(na.NEAT_Agent1(genome, network))
+
+        for _ in range(10):
+            game = ge.AgentGame(run_game=False, agents=agents)
+            winner = game.run_game()
+            if bool(winner) and winner.name == "NEAT_V1":
+                winner.add_reward(100)
+
+        print(agents[1].wrongs)
+        agents.pop()
 
 
 def main(config_path):
@@ -37,7 +49,7 @@ def main(config_path):
     population.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    winner = population.run(eval_genomes, 10)
+    winner = population.run(eval_genomes)
 
 
 if __name__ == "__main__":

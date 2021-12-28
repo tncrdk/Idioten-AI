@@ -16,7 +16,7 @@ data = {
 start = time.time()
 
 agents1 = [sa.PlayLowAgent1(), sa.PlayLowAgent1()]
-agents2 = [sa.PlayLowSaveAgent1("a"), sa.RandomAgent("c")]
+agents2 = [sa.RandomAgent("a"), sa.RandomAgent("b")]
 
 results = {agents2[0].name: 0, agents2[1].name: 0}
 

@@ -31,19 +31,21 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
         super().__init__(name=name)
         self.genome = genome
         self.network = network
+        self.genome.fitness = 0
+        self.wrongs = 0
 
     def process_input(self, data: dict) -> None:
-        """Output-format = (output, {index: 0, card: 1})"""
+        """Output-format = (output, safe?)"""
         input_data = self.format_data(data)
         output_data = self.network.activate(input_data)
-        if output_data[1] > 0.5:
+        if output_data[1] < 1:
             self.output = ("n", True)
         else:
-            chosen_card = math.floor(output_data[0])
-            self.output = (chosen_card, False)
+            chosen_card_value = math.ceil(output_data[0])
+            self.output = (chosen_card_value, False)
 
     def add_reward(self, reward: int) -> None:
-        self.genome += reward
+        self.genome.fitness += reward
 
     def format_data(self, data: dict) -> tuple:
         pass
@@ -55,15 +57,20 @@ class NEAT_Agent1(AbstractNEAT_Agent):
     ) -> None:
         super().__init__(genome, network, name=name)
 
-    def format_data(self, data: dict):
-        player_hand = data["hand"]
-        input_data = [0 for i in range(13)]
+    def format_data(self, data: dict) -> list:
+        player_hand = data["hand_cards"]
+        formatted_data = [0 for i in range(13)]
+        must_play = 0
+        pile_card = 0
 
         for card in player_hand:
-            input_data[card.value - 2] += 1
+            formatted_data[card.value - 2] += 1
 
-        must_play = 1 if data["must_play"] else 0
-        pile_card = data["pile"].get_top_card()
-        input_data += [must_play, pile_card]
+        if data["must_play"]:
+            must_play = 1
+        if bool(data["pile"]):
+            pile_card = data["pile"].get_top_card().value
 
-        return input_data
+        formatted_data += [must_play, pile_card]
+
+        return formatted_data

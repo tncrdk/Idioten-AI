@@ -314,10 +314,6 @@ class AgentTurn(AbstractTurn):
             "burnt_cards": self.burnt_cards,
             "must_play": must_play,
         }
-        # print(self.player.policy.name)
-        # if len(self.pile) >= 1:
-        #     print(self.pile[-1].value)
-        # print([(i[0], i[1].value) for i in input_data["playable_cards"]])
         self.player.policy.process_input(input_data)
 
     """ 
@@ -325,27 +321,26 @@ class AgentTurn(AbstractTurn):
     """
 
     def get_player_input(self, playable_cards: list, can_build: bool) -> int:
-        # print(self.player.policy.return_output())
-        # print("-" * 10)
         """return_output format = (output, safe_index?)"""
 
         chosen_card = None
+        chosen_index = None
         player_input, safe = self.player.policy.return_output()
 
-        if safe:
-            if player_input != "n":
-                chosen_card = self.player.get_hand_card(player_input)
+        if player_input == "n":
             return player_input, chosen_card
 
-        else:
-            if player_input == "n" and can_build:
-                return player_input, chosen_card
+        if safe:
+            chosen_card = self.player.get_hand_card(player_input)
+            return player_input, chosen_card
 
-            index, card, valid = self.find_card(player_input, playable_cards)
-            if valid:
-                return index, card
+        chosen_index, chosen_card, valid_input = self.find_card(
+            player_input, playable_cards
+        )
+        if valid_input:
+            return chosen_index, chosen_card
 
-            self.player.policy.add_reward(-30)
-
+        self.player.policy.add_reward(-1)
+        self.player.policy.wrongs += 1
         rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
         return rand_ind, rand_card

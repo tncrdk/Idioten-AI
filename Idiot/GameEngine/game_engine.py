@@ -138,11 +138,11 @@ class AgentGame(AbstactGame):
                 game_finished = self.check_if_game_finished() or turn_number >= 10000
                 if game_finished:
                     break
-        # if bool(standings):
-        #     print(standings[0].policy.name)
-        # print(turn_number)
-        return standings[0].policy.name
-        # gjør noe med belønninger
+
+        if bool(standings):
+            return standings[0].policy
+        else:
+            return None
 
 
 if __name__ == "__main__":
