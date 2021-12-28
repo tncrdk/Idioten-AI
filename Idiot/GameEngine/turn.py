@@ -340,7 +340,6 @@ class AgentTurn(AbstractTurn):
         if valid_input:
             return chosen_index, chosen_card
 
-        self.player.policy.add_reward(-1)
         self.player.policy.wrongs += 1
         rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
         return rand_ind, rand_card

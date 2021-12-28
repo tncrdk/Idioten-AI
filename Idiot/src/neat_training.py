@@ -2,9 +2,9 @@ import import_files
 import game_engine as ge
 import static_agents as sa
 import NEAT_agent as na
-import time
 import os
 import neat
+import pickle
 
 from turn import AgentTurn
 
@@ -21,18 +21,24 @@ data = {
 
 
 def eval_genomes(genomes, config):
-    agents = [sa.RandomAgent()]
+    agents = [sa.PlayLowAgent1()]
     for _, genome in genomes:
         network = neat.nn.FeedForwardNetwork.create(genome, config)
         agents.append(na.NEAT_Agent1(genome, network))
-
-        for _ in range(10):
+        neat_wins = 0
+        games = 50
+        for _ in range(games):
             game = ge.AgentGame(run_game=False, agents=agents)
             winner = game.run_game()
             if bool(winner) and winner.name == "NEAT_V1":
-                winner.add_reward(100)
+                neat_wins += 1
 
-        print(agents[1].wrongs)
+        print("-" * 10)
+        print(neat_wins / games)
+        print(agents[1].wrongs / games)
+        agents[1].add_reward(
+            (neat_wins * 1000 / games) - (agents[1].wrongs / (10 * games))
+        )
         agents.pop()
 
 
@@ -50,6 +56,10 @@ def main(config_path):
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
     winner = population.run(eval_genomes)
+
+    with open("winner.pkl", "wb") as f:
+        pickle.dump(winner, f)
+        f.close()
 
 
 if __name__ == "__main__":

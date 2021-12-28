@@ -41,7 +41,7 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
         if output_data[1] < 1:
             self.output = ("n", True)
         else:
-            chosen_card_value = math.ceil(output_data[0])
+            chosen_card_value = math.floor(self.translate(output_data[0]))
             self.output = (chosen_card_value, False)
 
     def add_reward(self, reward: int) -> None:
@@ -49,6 +49,9 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
 
     def format_data(self, data: dict) -> tuple:
         pass
+
+    def translate(self, value):
+        return 2 + ((value + 1) * 12 / 2)
 
 
 class NEAT_Agent1(AbstractNEAT_Agent):
