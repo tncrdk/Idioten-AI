@@ -77,14 +77,34 @@ class Training2(AbstractTraining):
         super().__init__(config_path)
 
     def eval_genomes(self, genomes, config):
-        pass
+        agents = [sa.PlayLowAgent1()]
+        for _, genome in genomes:
+            network = neat.nn.FeedForwardNetwork.create(genome, config)
+            agents.append(na.NEAT_Agent2(genome, network))
+            neat_wins = 0
+            games = 50
+            for _ in range(games):
+                game = ge.AgentGame(run_game=False, agents=agents)
+                winner = game.run_game()
+                if bool(winner) and winner.name == "NEAT_V2":
+                    neat_wins += 1
+
+            print("-" * 10)
+            print(neat_wins / games)
+            print(agents[1].wrongs / games)
+            print(agents[1].turns / games)
+            # agents[1].add_reward(
+            #     (neat_wins * 100 / games) - (agents[1].turns / games) / 1000
+            # )
+            agents[1].add_reward(neat_wins * 100 / games)
+            agents.pop()
 
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, r"Config-files\config1.txt")
+    config_path = os.path.join(local_dir, r"Config-files\config2.txt")
 
     file_name = "winner2.pkl"
 
-    t = Training1(config_path)
+    t = Training2(config_path)
     t.train(file_name)

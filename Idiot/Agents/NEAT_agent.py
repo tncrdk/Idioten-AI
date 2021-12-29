@@ -2,6 +2,8 @@ import agent
 import neat
 import math
 
+from deck import Card
+
 """ Input layer:    hand                                            pile?
     [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, ||(, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,) must_play, top_pile_value]
 
@@ -51,14 +53,14 @@ class NEAT_Agent1(AbstractNEAT_Agent):
         super().__init__(genome, network, name=name)
 
     def process_input(self, data: dict) -> None:
-        """Output-format = (output, safe?)"""
+        """Output-format = (output, is_index?, safe?)"""
         input_data = self.format_data(data)
         output_data = self.network.activate(input_data)
         if output_data[1] < 1:
-            self.output = ("n", True)
+            self.output = ("n", None, True)
         else:
             chosen_card_value = math.floor(self.translate(output_data[0]))
-            self.output = (chosen_card_value, False)
+            self.output = (None, chosen_card_value, False)
 
     def format_data(self, data: dict) -> list:
         player_hand = data["hand_cards"]
@@ -84,12 +86,53 @@ class NEAT_Agent1(AbstractNEAT_Agent):
 
 class NEAT_Agent2(AbstractNEAT_Agent):
     def __init__(
-        self, genome, network: neat.nn.FeedForwardNetwork, name="AbstractNEAT"
+        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V2"
     ) -> None:
         super().__init__(genome, network, name=name)
+        self.turns = 0
 
     def process_input(self, data: dict) -> None:
-        pass
+        """Output-format = (output: card, is_index?, safe?) (card, False, True)"""
+        input_data = self.format_data(data)
+        output_data = self.network.activate(input_data)
+        if output_data[-1] > 0.5:
+            self.output = ("n", None, True)
+        else:
+            output_data.pop()
+            playable_cards = data["playable_cards"]
+            chosen_card_value, chosen_index = self.choose_card(
+                output_data, playable_cards
+            )
+            self.output = (chosen_index, chosen_card_value, True)
 
     def format_data(self, data: dict) -> tuple:
-        pass
+        player_hand = data["hand_cards"]
+        formatted_data = [0 for i in range(13)]
+        must_play = 0
+        pile_card = 0
+
+        for card in player_hand:
+            formatted_data[card.value - 2] += 1
+
+        formatted_data = [self.transform_input(value) for value in formatted_data]
+
+        if data["must_play"]:
+            must_play = 1
+        if bool(data["pile"]):
+            pile_card = data["pile"].get_top_card().value
+
+        formatted_data += [must_play, pile_card]
+
+        return formatted_data
+
+    def choose_card(self, output_data: list, playable_cards: list):
+        data = [(value, index) for index, value in enumerate(output_data)]
+        data.sort(reverse=True)
+
+        for _, index in data:
+            for i, card in playable_cards:
+                if index + 2 == card.value:
+                    return card, i
+
+    def transform_input(self, data):
+        return data / 2 - 1

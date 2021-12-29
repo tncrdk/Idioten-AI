@@ -23,7 +23,7 @@ class PlayLowAgent1(agent.AbstractAgent):
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
         if bool(playable_cards):
-            self.output = (self.get_smallest_card(playable_cards), True)
+            self.output = (self.get_smallest_card(playable_cards), None, True)
 
     def get_smallest_card(self, playable_cards) -> int:
         smallest_card = 15
@@ -46,9 +46,9 @@ class PlayLowSaveAgent1(agent.AbstractAgent):
         if bool(playable_cards):
             output = self.choose_card(playable_cards, must_play)
             if output != None:
-                self.output = (output, True)
+                self.output = (output, None, True)
             else:
-                self.output = ("n", True)
+                self.output = ("n", None, True)
 
     def choose_card(self, playable_cards, must_play) -> int:
         cards_sorted = sorted([(card, index) for index, card in playable_cards])
@@ -73,7 +73,7 @@ class PlayHighAgent1(agent.AbstractAgent):
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
         if bool(playable_cards):
-            self.output = (self.get_highest_card(playable_cards), True)
+            self.output = (self.get_highest_card(playable_cards), None, True)
 
     def get_highest_card(self, playable_cards):
         highest_card = 0
@@ -93,7 +93,7 @@ class RandomAgent(agent.AbstractAgent):
         playable_cards = data["playable_cards"]
         length = len(playable_cards)
         rand_index = randint(0, length)
-        self.output = (playable_cards[rand_index][0], True)
+        self.output = (playable_cards[rand_index][0], None, True)
 
 
 if __name__ == "__main__":

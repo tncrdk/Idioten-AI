@@ -20,6 +20,9 @@ class AbstractPlayer:
     def get_hand_card(self, index: int) -> deck.Card:
         return self.hand[index]
 
+    def get_hand_index(self, card: deck.Card) -> int:
+        return self.hand.index(card)
+
     def play_hand_card(self, index: int) -> deck.Card:
         card = self.hand.pop(index)
         return card

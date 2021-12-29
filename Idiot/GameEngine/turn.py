@@ -320,22 +320,26 @@ class AgentTurn(AbstractTurn):
     INPUT
     """
 
-    def get_player_input(self, playable_cards: list, can_build: bool) -> int:
-        """return_output format = (output, safe_index?)"""
+    def get_player_input(self, playable_cards: list, can_build: bool) -> tuple:
+        """return_output format = (output, index, safe?)"""
 
         chosen_card = None
         chosen_index = None
-        player_input, safe = self.player.policy.return_output()
+        chosen_index, chosen_card, safe = self.player.policy.return_output()
 
-        if player_input == "n":
-            return player_input, chosen_card
+        if chosen_index == "n":
+            return chosen_index, chosen_card
 
         if safe:
-            chosen_card = self.player.get_hand_card(player_input)
-            return player_input, chosen_card
+            if chosen_card == None:
+                chosen_card = self.player.get_hand_card(chosen_index)
+                return chosen_index, chosen_card
+            elif chosen_index != None and chosen_card != None:
+                self.player.policy.turns += 1
+                return chosen_index, chosen_card
 
         chosen_index, chosen_card, valid_input = self.find_card(
-            player_input, playable_cards
+            chosen_index, playable_cards
         )
         if valid_input:
             return chosen_index, chosen_card
