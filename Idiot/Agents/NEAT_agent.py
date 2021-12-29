@@ -89,13 +89,12 @@ class NEAT_Agent2(AbstractNEAT_Agent):
         self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V2"
     ) -> None:
         super().__init__(genome, network, name=name)
-        self.turns = 0
 
     def process_input(self, data: dict) -> None:
         """Output-format = (output: card, is_index?, safe?) (card, False, True)"""
         input_data = self.format_data(data)
         output_data = self.network.activate(input_data)
-        if output_data[-1] > 0.5:
+        if output_data[-1] > 0.5 and not data["must_play"]:
             self.output = ("n", None, True)
         else:
             output_data.pop()

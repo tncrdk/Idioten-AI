@@ -327,7 +327,8 @@ class AgentTurn(AbstractTurn):
         chosen_index = None
         chosen_index, chosen_card, safe = self.player.policy.return_output()
 
-        if chosen_index == "n":
+        if chosen_index == "n" and can_build:
+            self.player.policy.turns += 1
             return chosen_index, chosen_card
 
         if safe:
