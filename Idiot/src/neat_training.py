@@ -20,49 +20,71 @@ data = {
 """
 
 
-def eval_genomes(genomes, config):
-    agents = [sa.PlayLowAgent1()]
-    for _, genome in genomes:
-        network = neat.nn.FeedForwardNetwork.create(genome, config)
-        agents.append(na.NEAT_Agent1(genome, network))
-        neat_wins = 0
-        games = 50
-        for _ in range(games):
-            game = ge.AgentGame(run_game=False, agents=agents)
-            winner = game.run_game()
-            if bool(winner) and winner.name == "NEAT_V1":
-                neat_wins += 1
-
-        print("-" * 10)
-        print(neat_wins / games)
-        print(agents[1].wrongs / games)
-        agents[1].add_reward(
-            (neat_wins * 1000 / games) - (agents[1].wrongs / (10 * games))
+class AbstractTraining:
+    def __init__(self, config_path) -> None:
+        self.config = neat.config.Config(
+            neat.DefaultGenome,
+            neat.DefaultReproduction,
+            neat.DefaultSpeciesSet,
+            neat.DefaultStagnation,
+            config_path,
         )
-        agents.pop()
+
+        self.population = neat.Population(self.config)
+        self.population.add_reporter(neat.StdOutReporter(True))
+        stats = neat.StatisticsReporter()
+        self.population.add_reporter(stats)
+
+    def train(self, save_file_name):
+        winner = self.population.run(self.eval_genomes)
+
+        with open(save_file_name, "wb") as f:
+            pickle.dump(winner, f)
+            f.close()
+
+    def eval_genomes(self, genomes, config):
+        pass
 
 
-def main(config_path):
-    config = neat.config.Config(
-        neat.DefaultGenome,
-        neat.DefaultReproduction,
-        neat.DefaultSpeciesSet,
-        neat.DefaultStagnation,
-        config_path,
-    )
+class Training1(AbstractTraining):
+    def __init__(self, config_path) -> None:
+        super().__init__(config_path)
 
-    population = neat.Population(config)
-    population.add_reporter(neat.StdOutReporter(True))
-    stats = neat.StatisticsReporter()
-    population.add_reporter(stats)
-    winner = population.run(eval_genomes)
+    def eval_genomes(self, genomes, config):
+        agents = [sa.PlayLowAgent1()]
+        for _, genome in genomes:
+            network = neat.nn.FeedForwardNetwork.create(genome, config)
+            agents.append(na.NEAT_Agent1(genome, network))
+            neat_wins = 0
+            games = 50
+            for _ in range(games):
+                game = ge.AgentGame(run_game=False, agents=agents)
+                winner = game.run_game()
+                if bool(winner) and winner.name == "NEAT_V1":
+                    neat_wins += 1
 
-    with open("winner.pkl", "wb") as f:
-        pickle.dump(winner, f)
-        f.close()
+            print("-" * 10)
+            print(neat_wins / games)
+            print(agents[1].wrongs / games)
+            agents[1].add_reward(
+                (neat_wins * 1000 / games) - (agents[1].wrongs / (10 * games))
+            )
+            agents.pop()
+
+
+class Training2(AbstractTraining):
+    def __init__(self, config_path) -> None:
+        super().__init__(config_path)
+
+    def eval_genomes(self, genomes, config):
+        pass
 
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, r"Config-files\config.txt")
-    main(config_path)
+    config_path = os.path.join(local_dir, r"Config-files\config1.txt")
+
+    file_name = "winner2.pkl"
+
+    t = Training1(config_path)
+    t.train(file_name)

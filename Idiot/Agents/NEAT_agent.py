@@ -35,6 +35,22 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
         self.wrongs = 0
 
     def process_input(self, data: dict) -> None:
+        pass
+
+    def add_reward(self, reward: int) -> None:
+        self.genome.fitness += reward
+
+    def format_data(self, data: dict) -> tuple:
+        pass
+
+
+class NEAT_Agent1(AbstractNEAT_Agent):
+    def __init__(
+        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V1"
+    ) -> None:
+        super().__init__(genome, network, name=name)
+
+    def process_input(self, data: dict) -> None:
         """Output-format = (output, safe?)"""
         input_data = self.format_data(data)
         output_data = self.network.activate(input_data)
@@ -43,22 +59,6 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
         else:
             chosen_card_value = math.floor(self.translate(output_data[0]))
             self.output = (chosen_card_value, False)
-
-    def add_reward(self, reward: int) -> None:
-        self.genome.fitness += reward
-
-    def format_data(self, data: dict) -> tuple:
-        pass
-
-    def translate(self, value):
-        return 2 + ((value + 1) * 12 / 2)
-
-
-class NEAT_Agent1(AbstractNEAT_Agent):
-    def __init__(
-        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V1"
-    ) -> None:
-        super().__init__(genome, network, name=name)
 
     def format_data(self, data: dict) -> list:
         player_hand = data["hand_cards"]
@@ -77,3 +77,19 @@ class NEAT_Agent1(AbstractNEAT_Agent):
         formatted_data += [must_play, pile_card]
 
         return formatted_data
+
+    def translate(self, value):
+        return 2 + ((value + 1) * 12 / 2)
+
+
+class NEAT_Agent2(AbstractNEAT_Agent):
+    def __init__(
+        self, genome, network: neat.nn.FeedForwardNetwork, name="AbstractNEAT"
+    ) -> None:
+        super().__init__(genome, network, name=name)
+
+    def process_input(self, data: dict) -> None:
+        pass
+
+    def format_data(self, data: dict) -> tuple:
+        pass
