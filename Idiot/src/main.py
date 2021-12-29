@@ -16,14 +16,14 @@ data = {
 start = time.time()
 
 agents1 = [sa.PlayLowAgent1(), sa.PlayLowAgent1()]
-agents2 = [sa.RandomAgent("a"), sa.RandomAgent("b")]
+agents2 = [sa.RandomAgent("a"), sa.PlayLowAgent1("b")]
 
 results = {agents2[0].name: 0, agents2[1].name: 0}
 
 for i in range(100):
     main_game = ge.AgentGame(agents=agents2, run_game=False)
     standings = main_game.run_game()
-    results[standings] += 1
+    results[standings.name] += 1
 
 # main_game = ge.AgentGame(agents=agents2)
 print(results)

@@ -91,12 +91,12 @@ class Training2(AbstractTraining):
 
             print("-" * 10)
             print(neat_wins / games)
-            print(agents[1].wrongs / games)
+            # print(agents[1].wrongs / games)
             print(agents[1].turns / games)
-            # agents[1].add_reward(
-            #     (neat_wins * 100 / games) - (agents[1].turns / games) / 1000
-            # )
-            agents[1].add_reward(neat_wins * 100 / games)
+            agents[1].add_reward(
+                (neat_wins * 100 / games) - (agents[1].turns / games) / 1000
+            )
+            # agents[1].add_reward(neat_wins * 100 / games)
             agents.pop()
 
 
