@@ -53,8 +53,10 @@ class AbstactGame:
 
 
 class PlayerGame(AbstactGame):
-    def __init__(self, deal_cards=True, run_game=True) -> None:
-        super().__init__(deal_cards=deal_cards, run_game=run_game)
+    def __init__(self, deal_cards=True, run_game=True, generate_deck=True) -> None:
+        super().__init__(
+            deal_cards=deal_cards, run_game=run_game, generate_deck=generate_deck
+        )
 
     """ 
     SETUP
@@ -106,9 +108,21 @@ class PlayerGame(AbstactGame):
 
 
 class AgentGame(AbstactGame):
-    def __init__(self, deal_cards=True, run_game=True, agents=[]) -> None:
+    def __init__(
+        self, deal_cards=True, run_game=True, agents=[], custom_deck=None
+    ) -> None:
         self.agents = agents
-        super().__init__(deal_cards=deal_cards, run_game=run_game)
+        if bool(custom_deck):
+            self.deck = custom_deck
+            self.pile = deck.Deck(generate_deck=False)
+            self.players = []
+            self.add_players()
+            if deal_cards:
+                self.deal_cards()
+                if run_game:
+                    self.run_game()
+        else:
+            super().__init__(deal_cards=deal_cards, run_game=run_game)
 
     def add_players(self):
         if len(self.agents) > 5:

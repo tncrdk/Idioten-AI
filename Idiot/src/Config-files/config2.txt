@@ -1,14 +1,14 @@
 
 [NEAT]
 fitness_criterion     = max
-fitness_threshold     = 60
+fitness_threshold     = 20
 pop_size              = 20
 reset_on_extinction   = False
 
 [DefaultGenome]
 # node activation options
 activation_default      = clamped
-activation_mutate_rate  = 0.0
+activation_mutate_rate  = 0.1
 activation_options      = tanh
 
 # node aggregation options
@@ -17,7 +17,7 @@ aggregation_mutate_rate = 0.1
 aggregation_options     = sum
 
 # node bias options
-bias_init_mean          = 0.2
+bias_init_mean          = 0
 bias_init_stdev         = 1.0
 bias_max_value          = 30.0
 bias_min_value          = -30.0
@@ -76,5 +76,5 @@ max_stagnation       = 10
 species_elitism      = 2
 
 [DefaultReproduction]
-elitism            = 2
+elitism            = 1
 survival_threshold = 0.2

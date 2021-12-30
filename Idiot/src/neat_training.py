@@ -1,12 +1,12 @@
 import import_files
+import deck
 import game_engine as ge
 import static_agents as sa
 import NEAT_agent as na
 import os
 import neat
 import pickle
-
-from turn import AgentTurn
+from numpy.random import randint
 
 """
 data = {
@@ -73,18 +73,24 @@ class Training1(AbstractTraining):
 
 
 class Training2(AbstractTraining):
-    def __init__(self, config_path) -> None:
+    def __init__(self, config_path, decks) -> None:
         super().__init__(config_path)
+        self.decks = decks
 
     def eval_genomes(self, genomes, config):
-        agents = [sa.PlayLowAgent1()]
+        agents = [sa.RandomAgent()]
         for _, genome in genomes:
             network = neat.nn.FeedForwardNetwork.create(genome, config)
             agents.append(na.NEAT_Agent2(genome, network))
             neat_wins = 0
             games = 50
             for _ in range(games):
-                game = ge.AgentGame(run_game=False, agents=agents)
+                custom_deck = self.decks[randint(len(self.decks))]
+                game = ge.AgentGame(
+                    run_game=False,
+                    agents=agents,
+                    custom_deck=custom_deck,
+                )
                 winner = game.run_game()
                 if bool(winner) and winner.name == "NEAT_V2":
                     neat_wins += 1
@@ -93,10 +99,7 @@ class Training2(AbstractTraining):
             print(neat_wins / games)
             # print(agents[1].wrongs / games)
             print(agents[1].turns / games)
-            agents[1].add_reward(
-                (neat_wins * 100 / games) - (agents[1].turns / games) / 1000
-            )
-            # agents[1].add_reward(neat_wins * 100 / games)
+            agents[1].add_reward((neat_wins * 100 / games) - (agents[1].turns / games))
             agents.pop()
 
 
@@ -105,6 +108,9 @@ if __name__ == "__main__":
     config_path = os.path.join(local_dir, r"Config-files\config2.txt")
 
     file_name = "winner2.pkl"
+    decks = [deck.Deck() for _ in range(3)]
 
-    t = Training2(config_path)
+    t = Training2(config_path, decks)
     t.train(file_name)
+
+    # TODO use randomagent and fewer deck options; not random
