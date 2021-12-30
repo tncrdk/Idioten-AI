@@ -60,7 +60,7 @@ class Training1(AbstractTraining):
             games = 50
             for _ in range(games):
                 game = ge.AgentGame(run_game=False, agents=agents)
-                winner = game.run_game()
+                winner, _ = game.run_game()
                 if bool(winner) and winner.name == "NEAT_V1":
                     neat_wins += 1
 
@@ -103,7 +103,7 @@ class Training2(AbstractTraining):
             print(neat_wins / games)
             # print(agents[1].wrongs / games)
             print(tot_turns / games)
-            agents[1].add_reward((neat_wins * 100 / games) - (tot_turns / games))
+            agents[1].add_reward((neat_wins * 100 / games) - (tot_turns / games) * 3)
             agents.pop()
 
 
@@ -111,10 +111,8 @@ if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, r"Config-files\config2.txt")
 
-    file_name = "winner3.pkl"
-    decks = [deck.Deck() for _ in range(100)]
+    file_name = "winner5.pkl"
+    decks = [deck.Deck() for _ in range(1000)]
 
     t = Training2(config_path, decks)
     t.train(file_name)
-
-    # TODO use randomagent and fewer deck options; not random
