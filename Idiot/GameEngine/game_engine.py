@@ -154,9 +154,9 @@ class AgentGame(AbstactGame):
                     break
 
         if bool(standings):
-            return standings[0].policy
+            return standings[0].policy, turn_number
         else:
-            return None
+            return None, turn_number
 
 
 if __name__ == "__main__":

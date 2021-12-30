@@ -16,16 +16,22 @@ data = {
 start = time.time()
 
 agents1 = [sa.PlayLowAgent1(), sa.PlayLowAgent1()]
-agents2 = [sa.RandomAgent("a"), sa.PlayLowAgent1("b")]
+agents2 = [sa.RandomAgent("a"), sa.PlayLowSaveAgent1("b")]
 
 results = {agents2[0].name: 0, agents2[1].name: 0}
+games = 100
+tot_turns = 0
 
-for i in range(100):
+for i in range(games):
     main_game = ge.AgentGame(agents=agents2, run_game=False)
-    standings = main_game.run_game()
+    standings, turns = main_game.run_game()
     results[standings.name] += 1
+    tot_turns += turns
 
 # main_game = ge.AgentGame(agents=agents2)
-print(results)
+print(results[agents2[0].name] / games)
+print(results[agents2[1].name] / games)
+print(tot_turns / games)
+
 tot_time = time.time() - start
 print(f"Total tid: {tot_time}")

@@ -328,7 +328,6 @@ class AgentTurn(AbstractTurn):
         chosen_index, chosen_card, safe = self.player.policy.return_output()
 
         if chosen_index == "n" and can_build:
-            self.player.policy.turns += 1
             return chosen_index, chosen_card
 
         if safe:
@@ -336,7 +335,6 @@ class AgentTurn(AbstractTurn):
                 chosen_card = self.player.get_hand_card(chosen_index)
                 return chosen_index, chosen_card
             elif chosen_index != None and chosen_card != None:
-                self.player.policy.turns += 1
                 return chosen_index, chosen_card
 
         chosen_index, chosen_card, valid_input = self.find_card(
@@ -345,6 +343,5 @@ class AgentTurn(AbstractTurn):
         if valid_input:
             return chosen_index, chosen_card
 
-        self.player.policy.wrongs += 1
         rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
         return rand_ind, rand_card
