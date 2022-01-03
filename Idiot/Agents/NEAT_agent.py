@@ -39,6 +39,9 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
     def process_input(self, data: dict) -> None:
         pass
 
+    def get_fitness(self):
+        return self.genome.fitness
+
     def add_reward(self, reward: int) -> None:
         self.genome.fitness += reward
 
