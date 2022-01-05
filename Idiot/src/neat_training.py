@@ -182,12 +182,85 @@ class Training3(AbstractTraining):
             agents.pop()
 
 
+class Training4(AbstractTraining):
+    def __init__(self, config_path) -> None:
+        super().__init__(config_path)
+
+    def eval_genomes(self, genomes, config):
+        agents = [sa.PlayLowSaveAgent1()]
+        for _, genome in genomes:
+            network = neat.nn.FeedForwardNetwork.create(genome, config)
+            agents.append(na.NEAT_Agent3(genome, network))
+            neat_wins = 0
+            games = 100
+            tot_turns = 0
+            tot_games = 0
+
+            for _ in range(games):
+                game = ge.AgentGame(
+                    run_game=False,
+                    agents=agents,
+                )
+                winner, turns = game.run_game()
+                tot_turns += turns
+                tot_games += 1
+                if bool(winner) and winner.name == "NEAT_V2":
+                    neat_wins += 1
+
+            avg_turns = tot_turns / tot_games
+            avg_win = neat_wins / tot_games
+
+            if avg_win >= 0.4:
+                games *= 10
+                for _ in range(games):
+                    game = ge.AgentGame(
+                        run_game=False,
+                        agents=agents,
+                    )
+                    winner, turns = game.run_game()
+                    tot_turns += turns
+                    tot_games += 1
+                    if bool(winner) and winner.name == "NEAT_V2":
+                        neat_wins += 1
+                avg_turns = tot_turns / tot_games
+                avg_win = neat_wins / tot_games
+
+            if avg_win >= 0.5:
+                games *= 10
+                for _ in range(games):
+                    game = ge.AgentGame(
+                        run_game=False,
+                        agents=agents,
+                    )
+                    winner, turns = game.run_game()
+                    tot_turns += turns
+                    tot_games += 1
+                    if bool(winner) and winner.name == "NEAT_V2":
+                        neat_wins += 1
+                avg_turns = tot_turns / tot_games
+                avg_win = neat_wins / tot_games
+
+            print("-" * 10)
+            print(avg_win)
+            print(avg_turns)
+
+            if avg_turns <= 30:
+                agents[1].add_reward(avg_win * 100)
+            elif avg_turns <= 40:
+                agents[1].add_reward((avg_win * 100) - (avg_turns) + 15)
+            else:
+                agents[1].add_reward((avg_win * 100) - (avg_turns) * 3 + 15)
+            print(agents[1].get_fitness())
+
+            agents.pop()
+
+
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, r"Config-files\config2.txt")
+    config_path = os.path.join(local_dir, r"Config-files\config3.txt")
 
     file_name = "winner.pkl"
     decks = [deck.Deck() for _ in range(1000)]
 
-    t = Training3(config_path)
+    t = Training4(config_path)
     t.train(file_name)
