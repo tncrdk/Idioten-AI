@@ -244,10 +244,8 @@ class Training4(AbstractTraining):
             print(avg_win)
             print(avg_turns)
 
-            if avg_turns <= 30:
-                agents[1].add_reward(avg_win * 100)
-            elif avg_turns <= 40:
-                agents[1].add_reward((avg_win * 100) - (avg_turns) + 15)
+            if avg_turns <= 40:
+                agents[1].add_reward((avg_win * 100))
             else:
                 agents[1].add_reward((avg_win * 100) - (avg_turns) * 3 + 15)
             print(agents[1].get_fitness())
