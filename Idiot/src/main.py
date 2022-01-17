@@ -1,11 +1,11 @@
 import import_files
 import game_engine as ge
 import static_agents as sa
+import NEAT_agent as na
 import time
 import pickle
 import neat
 import os
-import NEAT_agent as na
 
 """
 data = {
