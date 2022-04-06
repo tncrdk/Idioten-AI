@@ -36,9 +36,8 @@ def create_NEAT_agent(config_path, genome_path):
     return agent
 
 
-genome_path = "winner7.pkl"
-local_dir = os.path.dirname(__file__)
-config_path = os.path.join(local_dir, r"Config-files\config2.txt")
+genome_path = r"WinnerAIs\winner7.pkl"
+config_path = r"Config-files\config2.txt"
 
 neat_agent = create_NEAT_agent(config_path, genome_path)
 
