@@ -6,23 +6,18 @@ import static_agents as sa
 import math
 import os
 
-# def choose_card(output_data, playable_cards):
-#     data = [(value, index) for index, value in enumerate(output_data)]
-#     data.sort(reverse=True)
 
-#     for _, index in data:
-#         for i, value in playable_cards:
-#             if index + 2 == value:
-#                 return i, value
+def choose_card(output_data, playable_cards):
+    output_data = list(enumerate(output_data))
+    output_data.sort(key=lambda x: x[1], reverse=True)
+
+    for index, _ in output_data:
+        for i, card in playable_cards:
+            if index + 2 == card:
+                return card, i
 
 
-# playable_cards = [(0, 3), (1, 6), (2, 8), (3, 9), (4, 9), (5, 9)]
-# output_data = [1, 2, 3, 4, 4]
+playable_cards = [(0, 3), (1, 6), (2, 8), (3, 9), (4, 9), (5, 9)]
+output_data = [1, 2, 3, 4, 4]
 
-# print(choose_card(output_data, playable_cards))
-local_dir = os.path.dirname(__file__)
-file_path = os.path.join(local_dir, "Winners\ehh.txt")
-# with open(file_path, "w") as f:
-#     f.write("Hallo")
-#     f.close()
-print(file_path)
+print(choose_card(output_data, playable_cards))

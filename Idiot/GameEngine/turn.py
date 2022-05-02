@@ -33,7 +33,7 @@ class AbstractTurn:
 
         while (must_play or may_build) and can_play:
             self.show_player_info(playable_cards, must_play)
-            player_input, chosen_card = self.get_player_input(playable_cards, may_build)
+            player_input, chosen_card = self.get_player_input(playable_cards, must_play)
 
             if player_input == "n":
                 break
@@ -52,8 +52,9 @@ class AbstractTurn:
     """
 
     def apply_side_effects(self, played_card: deck.Card) -> tuple:
-        """Sjekk om det skal skje noe spesielt på grunn kortet som ble spilt. Hvis ja, gjennomfør disse effektene"""
+        """Sjekk om det skal skje noe spesielt på grunn kortet som ble spilt. Hvis ja, gjennomfør disse effektene. -> must_play, may_build"""
         if played_card.value == 10 or self.check_4_in_a_row():
+
             self.burnt_cards += self.pile
             self.pile.clear()
             return (True, False)
@@ -266,8 +267,41 @@ class AgentTurn(AbstractTurn):
         deck: deck.Deck,
         pile: deck.Deck,
         burnt_cards: deck.Deck,
+        log_turn=False,
     ):
         super().__init__(player, deck, pile, burnt_cards)
+        self.log_turn = log_turn
+
+    def play_turn(self) -> None:
+        """
+        Selve turen blir spilt av en spiller. Dette er hovedfunksjonen og må bli kalt for at turen skal bli spilt
+        """
+        must_play = True
+        playable_cards = self.get_playable_cards()
+        can_play = bool(playable_cards)
+        may_build = False
+
+        if not can_play:
+            self.can_not_play_actions(playable_cards, must_play)
+
+        while (must_play or may_build) and can_play:
+            self.show_player_info(playable_cards, must_play)
+            player_input, chosen_card = self.get_player_input()
+
+            if player_input == None:
+                break
+
+            if self.log_turn:
+                self.log_play(playable_cards, chosen_card, must_play)
+
+            self.play_card(player_input)
+            must_play, may_build = self.apply_side_effects(chosen_card)
+            self.take_visible_table_cards()  # Funksjonen sjekker om spilleren har mulighet også
+            playable_cards = self.get_playable_cards(may_build)
+            can_play = bool(playable_cards)
+            self.restore_hand()
+        self.take_hidden_table_cards()
+        self.player.check_if_finished()
 
     """
     ACTIONS
@@ -289,6 +323,9 @@ class AgentTurn(AbstractTurn):
         ):
             self.player.hand.append(self.player.table_hidden.pop())
         self.player.check_if_finished()
+
+    def log_play(self, chosen_card, playable_cards, must_play):
+        pass
 
     """
     GET-FUNCTIONS
@@ -320,28 +357,16 @@ class AgentTurn(AbstractTurn):
     INPUT
     """
 
-    def get_player_input(self, playable_cards: list, can_build: bool) -> tuple:
+    def get_player_input(self) -> tuple:
         """return_output format = (output, index, safe?)"""
-
         chosen_card = None
         chosen_index = None
-        chosen_index, chosen_card, safe = self.player.policy.return_output()
+        chosen_index, chosen_card = self.player.policy.return_output()
 
-        if chosen_index == "n" and can_build:
+        if chosen_index == None:
             return chosen_index, chosen_card
 
-        if safe:
-            if chosen_card == None:
-                chosen_card = self.player.get_hand_card(chosen_index)
-                return chosen_index, chosen_card
-            elif chosen_index != None and chosen_card != None:
-                return chosen_index, chosen_card
-
-        chosen_index, chosen_card, valid_input = self.find_card(
-            chosen_index, playable_cards
-        )
-        if valid_input:
+        if chosen_index != None and chosen_card != None:
             return chosen_index, chosen_card
-
-        rand_ind, rand_card = playable_cards[randint(len(playable_cards))]
-        return rand_ind, rand_card
+        else:
+            raise Exception("Ikke gyldig output")

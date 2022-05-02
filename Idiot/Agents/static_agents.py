@@ -23,7 +23,7 @@ class PlayLowAgent1(agent.AbstractAgent):
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
         if bool(playable_cards):
-            self.output = (self.get_smallest_card(playable_cards), None, True)
+            self.output = self.get_smallest_card(playable_cards)
 
     def get_smallest_card(self, playable_cards) -> int:
         smallest_card = 15
@@ -32,7 +32,7 @@ class PlayLowAgent1(agent.AbstractAgent):
                 smallest_card = card
                 smallest_card_index = index
 
-        return smallest_card_index
+        return smallest_card_index, smallest_card
 
 
 class PlayLowSaveAgent1(agent.AbstractAgent):
@@ -43,27 +43,27 @@ class PlayLowSaveAgent1(agent.AbstractAgent):
     def process_input(self, data: dict) -> None:
         playable_cards = data["playable_cards"]
         must_play = data["must_play"]
-        if bool(playable_cards):
-            output = self.choose_card(playable_cards, must_play)
-            if output != None:
-                self.output = (output, None, True)
+        if playable_cards:
+            chosen_index, chosen_card = self.choose_card(playable_cards, must_play)
+            if chosen_index != None:
+                self.output = (chosen_index, chosen_card)
             else:
-                self.output = ("n", None, True)
+                self.output = (None, None)
 
-    def choose_card(self, playable_cards, must_play) -> int:
-        cards_sorted = sorted([(card, index) for index, card in playable_cards])
+    def choose_card(self, playable_cards: list, must_play) -> int:
+        cards_sorted = sorted(playable_cards, key=lambda x: x[1])
         if must_play:
-            for card, index in cards_sorted:
+            for index, card in cards_sorted:
                 if card.value not in {2, 10}:
-                    return index
-            return cards_sorted[0][1]
+                    return index, card
+            return cards_sorted[0]
 
-        for card, index in cards_sorted:
+        for index, card in cards_sorted:
             if card.value not in {2, 10}:
-                return index
+                return index, card
 
         if len(cards_sorted) > 1:
-            return cards_sorted[0][1]
+            return cards_sorted[0]
 
 
 class PlayHighAgent1(agent.AbstractAgent):
@@ -73,7 +73,7 @@ class PlayHighAgent1(agent.AbstractAgent):
     def process_input(self, data: dict) -> None:
         playable_cards = data.get("playable_cards")
         if bool(playable_cards):
-            self.output = (self.get_highest_card(playable_cards), None, True)
+            self.output = self.get_highest_card(playable_cards)
 
     def get_highest_card(self, playable_cards):
         highest_card = 0
@@ -82,7 +82,7 @@ class PlayHighAgent1(agent.AbstractAgent):
                 highest_card = card
                 highest_card_index = index
 
-        return highest_card_index
+        return highest_card_index, highest_card
 
 
 class RandomAgent(agent.AbstractAgent):
@@ -93,7 +93,7 @@ class RandomAgent(agent.AbstractAgent):
         playable_cards = data["playable_cards"]
         length = len(playable_cards)
         rand_index = randint(0, length)
-        self.output = (playable_cards[rand_index][0], None, True)
+        self.output = playable_cards[rand_index]
 
 
 if __name__ == "__main__":

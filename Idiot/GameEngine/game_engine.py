@@ -109,7 +109,12 @@ class PlayerGame(AbstactGame):
 
 class AgentGame(AbstactGame):
     def __init__(
-        self, deal_cards=True, run_game=True, agents=[], custom_deck=None
+        self,
+        deal_cards=True,
+        run_game=True,
+        agents=[],
+        custom_deck=None,
+        log_game=False,
     ) -> None:
         self.agents = agents
         if bool(custom_deck):
@@ -123,6 +128,11 @@ class AgentGame(AbstactGame):
                     self.run_game()
         else:
             super().__init__(deal_cards=deal_cards, run_game=run_game)
+
+        if log_game:
+            self.log_game = True
+        else:
+            self.log_game = False
 
     def add_players(self):
         if len(self.agents) > 5:
@@ -145,7 +155,11 @@ class AgentGame(AbstactGame):
             for player in self.players:
                 if not player.finished:
                     turn.AgentTurn(
-                        player, self.deck, self.pile, burnt_cards
+                        player,
+                        self.deck,
+                        self.pile,
+                        burnt_cards,
+                        log_turn=self.log_game,
                     ).play_turn()
                     if player.finished:
                         standings.append(player)

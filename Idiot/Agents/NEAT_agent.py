@@ -50,44 +50,6 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
         pass
 
 
-class NEAT_Agent1(AbstractNEAT_Agent):
-    def __init__(
-        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V1"
-    ) -> None:
-        super().__init__(genome, network, name=name)
-
-    def process_input(self, data: dict) -> None:
-        """Output-format = (output, is_index?, safe?)"""
-        input_data = self.format_data(data)
-        output_data = self.network.activate(input_data)
-        if output_data[1] < 1:
-            self.output = ("n", None, True)
-        else:
-            chosen_card_value = math.floor(self.translate(output_data[0]))
-            self.output = (None, chosen_card_value, False)
-
-    def format_data(self, data: dict) -> list:
-        player_hand = data["hand_cards"]
-        formatted_data = [0 for i in range(13)]
-        must_play = 0
-        pile_card = 0
-
-        for card in player_hand:
-            formatted_data[card.value - 2] += 1
-
-        if data["must_play"]:
-            must_play = 1
-        if bool(data["pile"]):
-            pile_card = data["pile"].get_top_card().value
-
-        formatted_data += [must_play, pile_card]
-
-        return formatted_data
-
-    def translate(self, value):
-        return 2 + ((value + 1) * 12 / 2)
-
-
 class NEAT_Agent2(AbstractNEAT_Agent):
     def __init__(
         self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V2"
@@ -99,14 +61,14 @@ class NEAT_Agent2(AbstractNEAT_Agent):
         input_data = self.format_data(data)
         output_data = self.network.activate(input_data)
         if output_data[-1] > 0.5 and not data["must_play"]:
-            self.output = ("n", None, True)
+            self.output = (None, None)
         else:
             output_data.pop()
             playable_cards = data["playable_cards"]
             chosen_card_value, chosen_index = self.choose_card(
                 output_data, playable_cards
             )
-            self.output = (chosen_index, chosen_card_value, True)
+            self.output = (chosen_index, chosen_card_value)
 
     def format_data(self, data: dict) -> tuple:
         player_hand = data["hand_cards"]
@@ -152,14 +114,12 @@ class NEAT_Agent3(AbstractNEAT_Agent):
         input_data = self.format_data(data)
         output_data = self.network.activate(input_data)
         if output_data[-1] > 0.5 and not data["must_play"]:
-            self.output = ("n", None, True)
+            self.output = (None, None)
         else:
             output_data.pop()
             playable_cards = data["playable_cards"]
-            chosen_card_value, chosen_index = self.choose_card(
-                output_data, playable_cards
-            )
-            self.output = (chosen_index, chosen_card_value, True)
+            chosen_card, chosen_index = self.choose_card(output_data, playable_cards)
+            self.output = (chosen_index, chosen_card)
 
     def format_data(self, data: dict) -> tuple:
         player_hand = data["hand_cards"]
@@ -203,3 +163,44 @@ class NEAT_Agent3(AbstractNEAT_Agent):
 
     def transform_input(self, data):
         return data / 2 - 1
+
+
+""" class NEAT_Agent1(AbstractNEAT_Agent):
+    # Depricated
+
+    def __init__(
+        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V1"
+    ) -> None:
+        super().__init__(genome, network, name=name)
+
+    def process_input(self, data: dict) -> None:
+        # Output-format = (output, is_index?, safe?)
+        input_data = self.format_data(data)
+        output_data = self.network.activate(input_data)
+        if output_data[1] < 1:
+            self.output = ("n", None, True)
+        else:
+            chosen_card_value = math.floor(self.translate(output_data[0]))
+            self.output = (None, chosen_card_value, False)
+
+    def format_data(self, data: dict) -> list:
+        player_hand = data["hand_cards"]
+        formatted_data = [0 for i in range(13)]
+        must_play = 0
+        pile_card = 0
+
+        for card in player_hand:
+            formatted_data[card.value - 2] += 1
+
+        if data["must_play"]:
+            must_play = 1
+        if bool(data["pile"]):
+            pile_card = data["pile"].get_top_card().value
+
+        formatted_data += [must_play, pile_card]
+
+        return formatted_data
+
+    def translate(self, value):
+        return 2 + ((value + 1) * 12 / 2)
+ """
