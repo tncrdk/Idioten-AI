@@ -69,7 +69,7 @@ class Training:
 
             if avg_neat_win_rate >= 0.5:
                 avg_neat_win_rate, avg_rounds = self.play_games(
-                    GAMES_TO_PLAY * 10, agents, neat_agent
+                    GAMES_TO_PLAY * 50, agents, neat_agent
                 )
 
             print("-" * 10)

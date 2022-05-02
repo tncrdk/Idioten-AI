@@ -16,6 +16,7 @@ class AbstractAgent:
     def __init__(self, name="AbstractAgent") -> None:
         self.output = None  # SKal være indeksen til kortet som skal spilles
         self.name = name
+        self.wins = 0
 
     def process_input(self, data: dict) -> None:
         """Choose best play according to the policy"""
