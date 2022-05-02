@@ -35,6 +35,7 @@ class AbstractNEAT_Agent(agent.AbstractAgent):
         self.network = network
         self.genome.fitness = 0
         self.wrongs = 0
+        self.wins = 0
 
     def process_input(self, data: dict) -> None:
         pass
