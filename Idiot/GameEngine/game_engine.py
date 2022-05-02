@@ -148,10 +148,10 @@ class AgentGame(AbstactGame):
         game_finished = False
         standings = []
         burnt_cards = []
-        turn_number = 0
+        turns_played = 0
 
         while not game_finished:
-            turn_number += 1
+            turns_played += 1
             for player in self.players:
                 if not player.finished:
                     turn.AgentTurn(
@@ -163,14 +163,14 @@ class AgentGame(AbstactGame):
                     ).play_turn()
                     if player.finished:
                         standings.append(player)
-                game_finished = self.check_if_game_finished() or turn_number >= 1000
+                game_finished = self.check_if_game_finished() or turns_played >= 1000
                 if game_finished:
                     break
 
         if bool(standings):
-            return standings[0].policy, turn_number
+            return standings[0].policy, turns_played
         else:
-            return None, turn_number
+            return None, turns_played
 
 
 if __name__ == "__main__":

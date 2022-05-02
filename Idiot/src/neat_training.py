@@ -76,7 +76,7 @@ class Training:
             print(avg_neat_win_rate)
             print(avg_rounds)
 
-            if avg_rounds <= 40:
+            if avg_rounds <= 100:
                 neat_agent.add_reward((avg_neat_win_rate * 100))
             else:
                 neat_agent.add_reward((avg_neat_win_rate * 100) - (avg_rounds) * 3 + 15)
