@@ -251,23 +251,23 @@ class Training4(AbstractTraining):
             print(agents[1].get_fitness())
 
             if agents[1].get_fitness() >= 51.5:
-                with open("winner_temp51_5", "wb") as f:
+                with open("winner_temp51_5.pkl", "wb") as f:
                     pickle.dump(genome, f)
                     f.close()
             elif agents[1].get_fitness() >= 51:
-                with open("winner_temp51", "wb") as f:
+                with open("winner_temp51.pkl", "wb") as f:
                     pickle.dump(genome, f)
                     f.close()
             elif agents[1].get_fitness() >= 50.5:
-                with open("winner_temp50_5", "wb") as f:
+                with open("winner_temp50_5.pkl", "wb") as f:
                     pickle.dump(genome, f)
                     f.close()
             elif agents[1].get_fitness() >= 50:
-                with open("winner_temp50", "wb") as f:
+                with open("winner_temp50.pkl", "wb") as f:
                     pickle.dump(genome, f)
                     f.close()
             elif agents[1].get_fitness() >= 49.5:
-                with open("winner_temp49_5", "wb") as f:
+                with open("winner_temp49_5.pkl", "wb") as f:
                     pickle.dump(genome, f)
                     f.close()
 
