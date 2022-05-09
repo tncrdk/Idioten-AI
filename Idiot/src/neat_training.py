@@ -8,6 +8,8 @@ import glob
 
 
 class Training:
+    best_fitness = 50
+
     def __init__(self, config_path, NeatAgentClass, winners_dir_path) -> None:
         self.NeatAgentClass = NeatAgentClass
         self.winners_dir_path = winners_dir_path
@@ -41,7 +43,6 @@ class Training:
 
         self.tot_games_played = 0
         self.tot_rounds_played = 0
-        self.best_fitness = 0
 
     def train(self, save_file_name):
         winner_genome = self.population.run(self.eval_genomes)
@@ -76,7 +77,7 @@ class Training:
             print(avg_neat_win_rate)
             print(avg_rounds)
 
-            if avg_rounds <= 100:
+            if avg_rounds <= 50:
                 neat_agent.add_reward((avg_neat_win_rate * 100))
             else:
                 neat_agent.add_reward((avg_neat_win_rate * 100) - (avg_rounds) * 3 + 15)
@@ -121,12 +122,12 @@ class Training:
         avg_neat_win_rate, avg_rounds = self.calculate_stats(neat_agent.wins)
         return avg_neat_win_rate, avg_rounds
 
-    def calculate_stats(self, neat_agent_wins):
+    def calculate_stats(self, neat_agent_wins) -> tuple[int]:
         avg_neat_win_rate = neat_agent_wins / self.tot_games_played
         avg_rounds = self.tot_rounds_played / self.tot_games_played
         return avg_neat_win_rate, avg_rounds
 
-    def save_genome(self, genome, save_file_name):
+    def save_genome(self, genome, save_file_name) -> None:
         path = os.path.join(self.winners_dir_path, save_file_name)
         with open(path, "wb") as f:
             pickle.dump(genome, f)

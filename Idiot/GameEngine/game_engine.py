@@ -163,7 +163,7 @@ class AgentGame(AbstactGame):
                     ).play_turn()
                     if player.finished:
                         standings.append(player)
-                game_finished = self.check_if_game_finished() or turns_played >= 1000
+                game_finished = self.check_if_game_finished() or turns_played >= 500
                 if game_finished:
                     break
 
