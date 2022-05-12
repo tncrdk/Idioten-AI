@@ -154,13 +154,15 @@ class AgentGame(AbstactGame):
             turns_played += 1
             for player in self.players:
                 if not player.finished:
-                    turn.AgentTurn(
+                    round = turn.AgentTurn(
                         player,
                         self.deck,
                         self.pile,
                         burnt_cards,
                         log_turn=self.log_game,
-                    ).play_turn()
+                        turn_number=turns_played,
+                    )
+                    round.play_turn()
                     if player.finished:
                         standings.append(player)
                 game_finished = self.check_if_game_finished() or turns_played >= 500

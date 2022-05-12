@@ -103,7 +103,7 @@ class NEAT_Agent2(AbstractNEAT_Agent):
 
 class NEAT_Agent3(AbstractNEAT_Agent):
     def __init__(
-        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V2"
+        self, genome, network: neat.nn.FeedForwardNetwork, name="NEAT_V3"
     ) -> None:
         super().__init__(genome, network, name=name)
 

@@ -1,6 +1,7 @@
 import deck
 import player
 import agent_path
+import NEAT_agent as ne
 from numpy.random import randint
 
 
@@ -268,9 +269,11 @@ class AgentTurn(AbstractTurn):
         pile: deck.Deck,
         burnt_cards: deck.Deck,
         log_turn=False,
+        turn_number=0,
     ):
         super().__init__(player, deck, pile, burnt_cards)
         self.log_turn = log_turn
+        self.turn_number = turn_number
 
     def play_turn(self) -> None:
         """
@@ -292,7 +295,10 @@ class AgentTurn(AbstractTurn):
                 break
 
             if self.log_turn:
-                self.log_play(playable_cards, chosen_card, must_play)
+                top_pile_card = 0
+                if self.pile:
+                    top_pile_card = self.pile.get_top_card()
+                self.log_play(chosen_card, playable_cards, must_play, top_pile_card)
 
             self.play_card(player_input)
             must_play, may_build = self.apply_side_effects(chosen_card)
@@ -324,8 +330,31 @@ class AgentTurn(AbstractTurn):
             self.player.hand.append(self.player.table_hidden.pop())
         self.player.check_if_finished()
 
-    def log_play(self, chosen_card, playable_cards, must_play):
-        pass
+    def log_play(
+        self,
+        chosen_card: deck.Card,
+        playable_cards: list,
+        must_play: bool,
+        top_pile_card: deck.Card,
+    ):
+        if not type(self.player.policy) == ne.NEAT_Agent3:
+            return
+
+        playable_cards_values = [card.value for _, card in playable_cards]
+        if top_pile_card == 0:
+            top_pile_card_value = 0
+        else:
+            top_pile_card_value = top_pile_card.value
+        save_data = [
+            self.turn_number,
+            chosen_card.value,
+            playable_cards_values,
+            must_play,
+            top_pile_card_value,
+        ]
+        with open(r".\Log\log.txt", "a") as f:
+            f.write(str(save_data))
+            f.write("\n")
 
     """
     GET-FUNCTIONS
@@ -338,6 +367,7 @@ class AgentTurn(AbstractTurn):
         return None, None, False
 
     """
+    
     OUTPUT
     """
 
