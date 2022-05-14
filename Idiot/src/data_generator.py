@@ -1,3 +1,4 @@
+from agent import AbstractAgent
 import import_files
 import game_engine as ge
 import static_agents as sa
@@ -27,7 +28,7 @@ class DataGenerator:
         neat_agent = na.NEAT_Agent3(genome, network)
         return neat_agent
 
-    def run_games(self, games: int, players: list) -> list[dict]:
+    def run_games(self, games: int, players: list[AbstractAgent]) -> dict:
         for player in players:
             player.wins = 0
 
@@ -37,35 +38,42 @@ class DataGenerator:
             if winner:
                 winner.wins += 1
 
-        return_value = [
-            {"name": player.name, "winrate": player.wins / games} for player in players
-        ]
+        return_value = {
+            player.name: {"wins": player.wins, "games": games} for player in players
+        }
         return return_value
 
-    def run_neat_first(self, games):
+    def run_groups(self, players, groups, group_size, save_path):
+        results = {player.name: {"wins": 0, "games": 0} for player in players}
+
+        for _ in range(groups):
+            result = self.run_games(group_size, players)
+            self.log_result(save_path, result)
+            for player_name, data in result.items():
+                results[player_name]["wins"] += data["wins"]
+                results[player_name]["games"] += data["games"]
+
+        self.print_results(results)
+
+    def run_neat_first(self, groups, group_size):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         static_agent = sa.PlayLowSaveAgent1()
-
         agents = [neat_agent, static_agent]
-        stats = self.run_games(games, agents)
+        SAVE_PATH = r".\Log\log_neat_first_results.txt"
+        self.run_groups(agents, groups, group_size, SAVE_PATH)
 
-        for stat in stats:
-            print(f'{stat.get("name")}: {stat.get("winrate")}')
-
-    def run_static_first(self, games):
+    def run_static_first(self, groups, group_size):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         static_agent = sa.PlayLowSaveAgent1()
-
         agents = [static_agent, neat_agent]
-        stats = self.run_games(games, agents)
+        SAVE_PATH = r".\Log\log_static_first_results.txt"
+        self.run_groups(agents, groups, group_size, SAVE_PATH)
 
-        for stat in stats:
-            print(f'{stat.get("name")}: {stat.get("winrate")}')
+    def log_result(self, file_path, result):
+        with open(file_path, "a") as f:
+            f.write(str(result))
+            f.write("\n")
 
-
-if __name__ == "__main__":
-    GENOME_PATH = r"Winners\winner.pkl"
-    CONFIG_PATH = r"Config-files\config3.txt"
-
-    analyzer = DataGenerator(CONFIG_PATH, GENOME_PATH)
-    analyzer.run_neat_first(1000)
+    def print_results(self, results: dict):
+        for player_name, data in results.items():
+            print(f'{player_name}: {data.get("wins") / data.get("games")}')

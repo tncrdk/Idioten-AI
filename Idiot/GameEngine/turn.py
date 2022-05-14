@@ -352,7 +352,7 @@ class AgentTurn(AbstractTurn):
             must_play,
             top_pile_card_value,
         ]
-        with open(r".\Log\log.txt", "a") as f:
+        with open(r".\Log\log_turns.txt", "a") as f:
             f.write(str(save_data))
             f.write("\n")
 
