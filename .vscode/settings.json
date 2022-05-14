@@ -4,7 +4,7 @@
         "**/target": true
     },
     "python.analysis.extraPaths": [
-        "./Idiot/GameEngine",
-        "./Idiot/Agents"
+        "./GameEngine",
+        "./Agents"
     ],
 }
