@@ -77,3 +77,13 @@ class DataGenerator:
     def print_results(self, results: dict):
         for player_name, data in results.items():
             print(f'{player_name}: {data.get("wins") / data.get("games")}')
+
+
+if __name__ == "__main__":
+    GENOME_PATH = r".\Winners\winner.pkl"
+    CONFIG_PATH = r".\Config-files\config3.txt"
+    GROUPS = 100
+    GROUP_SIZE = 1000
+
+    generator = DataGenerator(CONFIG_PATH, GENOME_PATH)
+    generator.run_neat_first(GROUPS, GROUP_SIZE)
