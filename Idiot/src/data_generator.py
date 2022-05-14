@@ -6,7 +6,7 @@ import neat
 import pickle
 
 
-class DataAnalysis:
+class DataGenerator:
     def __init__(self, config_path, genome_path) -> None:
         self.config_path = config_path
         self.genome_path = genome_path
@@ -67,5 +67,5 @@ if __name__ == "__main__":
     GENOME_PATH = r"Winners\winner.pkl"
     CONFIG_PATH = r"Config-files\config3.txt"
 
-    analyzer = DataAnalysis(CONFIG_PATH, GENOME_PATH)
+    analyzer = DataGenerator(CONFIG_PATH, GENOME_PATH)
     analyzer.run_neat_first(1000)
