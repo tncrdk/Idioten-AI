@@ -1,5 +1,5 @@
-from agent import AbstractAgent
 import import_files
+import agent
 import game_engine as ge
 import static_agents as sa
 import NEAT_agent as na
@@ -28,7 +28,7 @@ class DataGenerator:
         neat_agent = na.NEAT_Agent3(genome, network)
         return neat_agent
 
-    def run_games(self, games: int, players: list[AbstractAgent]) -> dict:
+    def run_games(self, games: int, players: list[agent.AbstractAgent]) -> dict:
         for player in players:
             player.wins = 0
 
