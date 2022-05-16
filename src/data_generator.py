@@ -82,7 +82,7 @@ class DataGenerator:
 if __name__ == "__main__":
     GENOME_PATH = r".\Winners\winner.pkl"
     CONFIG_PATH = r".\Config-files\config3.txt"
-    GROUPS = 100
+    GROUPS = 200
     GROUP_SIZE = 1000
 
     generator = DataGenerator(CONFIG_PATH, GENOME_PATH)

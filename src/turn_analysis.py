@@ -108,12 +108,14 @@ class TurnAnalysis:
 
     def plot_results(self, results, avg):
         results = [100 * x for x in results]
-        plt.plot(results, label="Identisk")
-        plt.plot(np.arange(0, len(results)), [avg] * len(results), label="Gjennomsnitt")
+        plt.plot(results, label="Enkeltsett")
+        plt.plot(
+            np.arange(len(results)), [avg * 100] * len(results), label="Gjennomsnitt"
+        )
 
         plt.title("NEAT identisk spillestil med Statisk agent")
 
-        plt.xlabel("Antall trekk")
+        plt.xlabel(f"Antall sett ({self.group_size} trekk i hvert sett)")
         plt.ylabel("Identisk (%)")
 
         plt.legend()
@@ -137,4 +139,4 @@ if __name__ == "__main__":
     LOG_WINS_PATH = r".\Log\log_neat_first_results.txt"
 
     analyzer = TurnAnalysis(1000)
-    analyzer.analyze_turns_binomial(LOG_TURNS_PATH, 2)
+    analyzer.analyze_turns_in_groups(LOG_TURNS_PATH, 100)
