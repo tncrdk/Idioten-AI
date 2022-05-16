@@ -16,6 +16,7 @@ class TurnAnalysis:
             while not finished:
                 finished, result = self.analyze_group(f, group_size)
                 results.append(result)
+        self.plot_results(results)
         avg, std = self.analyze_results(results)
         print(f"{avg} +/- {std}")
         return avg, std
@@ -71,6 +72,10 @@ class TurnAnalysis:
 
     def get_average(self, results):
         return sum(results) / len(results)
+
+    def plot_results(self, results):
+        plt.plot(results)
+        plt.show()
 
 
 class WinRateAnalysis:
