@@ -1,7 +1,7 @@
 import math
 import ast
-import json
 import matplotlib.pyplot as plt
+from scipy.stats import binom
 
 
 class TurnAnalysis:
@@ -114,8 +114,12 @@ class WinRateAnalysis:
                 wins += datapoint["NEAT_V3"]["wins"]
                 games += datapoint["NEAT_V3"]["games"]
 
-        win_rates = wins / games
-        print(win_rates)
+        avg = wins / games
+        variance_win_rate = avg * (1 - avg) * games
+        std = math.sqrt(variance_win_rate)
+        std_rel = std / games
+        print(avg)
+        print(std_rel)
 
     def get_std(self, results, avg):
         var_sum = 0
@@ -131,6 +135,28 @@ class WinRateAnalysis:
         plt.plot(winrates)
         plt.show()
 
+    @classmethod
+    def binomial_function(cls, probability, population_size, successes):
+        nCr = math.factorial(population_size) // (
+            math.factorial(successes) * math.factorial(population_size - successes)
+        )
+        return (
+            nCr
+            * pow(probability, successes)
+            * pow((1 - probability), (population_size - successes))
+        )
+
+    @classmethod
+    def get_p_value(cls, probability, population_size, criteria):
+        X = criteria  # Lower bound
+        p_value = 0
+
+        while X <= population_size:
+            p_value += cls.binomial_function(probability, population_size, X)
+            X += 1
+
+        print(p_value)
+
 
 if __name__ == "__main__":
     LOG_TURNS_PATH = r".\Log\log_turns.txt"
@@ -138,5 +164,6 @@ if __name__ == "__main__":
 
     # analyzer = TurnAnalysis()
     # analyzer.analyze_turns(LOG_TURNS_PATH, 10_000)
-    win_analyzer = WinRateAnalysis()
-    win_analyzer.analyze_groups(LOG_WINS_PATH)
+    # win_analyzer = WinRateAnalysis()
+    # win_analyzer.analyze_groups(LOG_WINS_PATH)
+    print(binom.cdf(49999, 100_000, 0.49))

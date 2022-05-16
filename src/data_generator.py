@@ -33,7 +33,7 @@ class DataGenerator:
             player.wins = 0
 
         for _ in range(games):
-            game = ge.AgentGame(agents=players, run_game=False, log_game=True)
+            game = ge.AgentGame(agents=players, run_game=False, log_game=False)
             winner, _ = game.run_game()
             if winner:
                 winner.wins += 1
