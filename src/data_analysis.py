@@ -13,9 +13,11 @@ class TurnAnalysis:
         with open(turns_log_path, "r") as f:
             results = []
             finished = False
+            i = 0
             while not finished:
                 finished, result = self.analyze_group(f, group_size)
                 results.append(result)
+                i += 1
         self.plot_results(results)
         avg, std = self.analyze_results(results)
         print(f"{avg} +/- {std}")
@@ -27,10 +29,11 @@ class TurnAnalysis:
         finished = False
 
         for _ in range(group_size):
-            datapoint = ast.literal_eval(file_object.readline().strip())
-            if not datapoint:
+            data_str = file_object.readline().strip()
+            if not data_str:
                 finished = True
                 break
+            datapoint = ast.literal_eval(data_str)
 
             playable_cards = datapoint[2]
             must_play = datapoint[3]
@@ -83,13 +86,16 @@ class WinRateAnalysis:
         with open(log_path, "r") as f:
             winrates = []
             while True:
-                datapoint = json.loads(f.readline().strip())
-                if not datapoint:
+                data_str = f.readline().strip()
+                if not data_str:
                     break
+                datapoint = ast.literal_eval(data_str)
                 wins = datapoint["NEAT_V3"]["wins"]
                 games = datapoint["NEAT_V3"]["games"]
-                winrates.append(wins / games)
+                winrate = wins / games
+                winrates.append(winrate)
 
+        self.plot_winrates(winrates)
         avg = self.get_average(winrates)
         std = self.get_std(winrates, avg)
         print(avg, std)
@@ -101,9 +107,10 @@ class WinRateAnalysis:
 
         with open(log_path, "r") as f:
             while True:
-                datapoint = dict(f.readline().strip())
-                if not datapoint:
+                data_str = f.readline().strip()
+                if not data_str:
                     break
+                datapoint = ast.literal_eval(data_str)
                 wins += datapoint["NEAT_V3"]["wins"]
                 games += datapoint["NEAT_V3"]["games"]
 
@@ -120,9 +127,16 @@ class WinRateAnalysis:
     def get_average(self, results):
         return sum(results) / len(results)
 
+    def plot_winrates(self, winrates):
+        plt.plot(winrates)
+        plt.show()
+
 
 if __name__ == "__main__":
-    LOG_PATH = r".\Log\log_turns.txt"
+    LOG_TURNS_PATH = r".\Log\log_turns.txt"
+    LOG_WINS_PATH = r".\Log\log_neat_first_results.txt"
 
-    analyzer = TurnAnalysis()
-    analyzer.analyze_turns(LOG_PATH, 10_000)
+    # analyzer = TurnAnalysis()
+    # analyzer.analyze_turns(LOG_TURNS_PATH, 10_000)
+    win_analyzer = WinRateAnalysis()
+    win_analyzer.analyze_groups(LOG_WINS_PATH)
