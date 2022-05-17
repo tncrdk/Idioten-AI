@@ -16,8 +16,8 @@ data = {
 """
 
 
-class PlayLowAgent1(agent.AbstractAgent):
-    def __init__(self, name="PlayLow1") -> None:
+class PlayLowAgent(agent.AbstractAgent):
+    def __init__(self, name="PlayLow") -> None:
         super().__init__(name)
 
     def process_input(self, data: dict) -> None:
@@ -35,7 +35,7 @@ class PlayLowAgent1(agent.AbstractAgent):
         return smallest_card_index, smallest_card
 
 
-class PlayLowSaveAgent1(agent.AbstractAgent):
+class PlayLowSaveAgent(agent.AbstractAgent):
     def __init__(self, name="PlayLowSaving") -> None:
         super().__init__(name)
         self.prior_hand = None
@@ -66,8 +66,8 @@ class PlayLowSaveAgent1(agent.AbstractAgent):
             return cards_sorted[0]
 
 
-class PlayHighAgent1(agent.AbstractAgent):
-    def __init__(self, name="PlayHigh1") -> None:
+class PlayHighAgent(agent.AbstractAgent):
+    def __init__(self, name="PlayHigh") -> None:
         super().__init__(name)
 
     def process_input(self, data: dict) -> None:

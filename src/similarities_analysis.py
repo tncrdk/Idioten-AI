@@ -101,7 +101,7 @@ class SimilaritiesAnalysis:
         print(f"Identical plays: {identical_plays}    Avg: {avg}")
         print(f"Stdev: {round(stdev, 2)}   Stdev (rel): {round(stdev_rel, 6)}")
 
-        file_path = r".\Results\sim_groups_analysis.csv"
+        file_path = r".\Results\sim_binomial_analysis.csv"
         self.save_to_csv_file(
             file_path,
             [identical_plays, avg, stdev, stdev_rel],

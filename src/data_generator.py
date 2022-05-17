@@ -59,20 +59,20 @@ class DataGenerator:
     def run_neat_first(self, groups: int, static_agent):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         agents = [neat_agent, static_agent]
-        SAVE_PATH = r".\Log\log_neat_first_vs_{}_results.txt".format(static_agent.name)
+        SAVE_PATH = r".\Log\log_neat_vs_{}.txt".format(static_agent.name)
         self.run_groups(agents, groups, SAVE_PATH)
 
     def run_static_first(self, groups: int, static_agent):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         agents = [static_agent, neat_agent]
-        SAVE_PATH = r".\Log\log_{}_first_vs_NEAT_results.txt".format(static_agent.name)
+        SAVE_PATH = r".\Log\log_{}_vs_NEAT.txt".format(static_agent.name)
         self.run_groups(agents, groups, SAVE_PATH)
 
     def run_identical_static_agents(self, groups: int):
-        static_agent_1 = sa.PlayLowSaveAgent1("First")
-        static_agent_2 = sa.PlayLowSaveAgent1("Second")
+        static_agent_1 = sa.PlayLowSaveAgent("First")
+        static_agent_2 = sa.PlayLowSaveAgent("Second")
         agents = [static_agent_1, static_agent_2]
-        SAVE_PATH = r".\Log\log_two_statics_only_results.txt"
+        SAVE_PATH = r".\Log\log_id_PlaylowSaving.txt"
         self.run_groups(agents, groups, SAVE_PATH)
 
     def log_result(self, file_path, result):
@@ -88,8 +88,8 @@ class DataGenerator:
 if __name__ == "__main__":
     GENOME_PATH = r".\Winners\winner.pkl"
     CONFIG_PATH = r".\Config-files\config3.txt"
-    GROUPS = 300
-    static_agent = sa.PlayLowAgent1()
+    GROUPS = 100
+    static_agent = sa.PlayHighAgent()
 
     generator = DataGenerator(CONFIG_PATH, GENOME_PATH)
     generator.run_static_first(GROUPS, static_agent)

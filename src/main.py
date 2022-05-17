@@ -5,16 +5,22 @@ import winrate_analysis as wa
 def win_analysis():
     binomial = "binomial"
     groups = "groups"
-    neat_first_PlayLowSaving_log_path = r".\Log\log_neat_first_results.txt"
-    static_first_PlayLowSaving_log_path = r".\Log\log_static_first_results.txt"
+    neat_vs_PlayLowSaving_log_path = r".\Log\log_neat_vs_PlayLowSaving.txt"
+    PlayLowSaving_vs_NEAT_log_path = r".\Log\log_PlayLowSaving_vs_NEAT.txt"
 
     analyzer = wa.WinrateAnalysis()
-    analyzer.neat_analysis(neat_first_PlayLowSaving_log_path, binomial, "NEAT")
-    # analyzer.neat_analysis(
-    #     static_first_PlayLowSaving_log_path, binomial, "PlayLowSaving"
-    # )
-    # analyzer.neat_analysis(neat_first_PlayLowSaving_log_path, groups, "NEAT")
-    # analyzer.neat_analysis(static_first_PlayLowSaving_log_path, groups, "PlayLowSaving")
+    analyzer.neat_analysis(
+        neat_vs_PlayLowSaving_log_path, binomial, "NEAT", "PlaylowSaving"
+    )
+    analyzer.neat_analysis(
+        PlayLowSaving_vs_NEAT_log_path, binomial, "PlayLowSaving", "NEAT"
+    )
+    analyzer.neat_analysis(
+        neat_vs_PlayLowSaving_log_path, groups, "NEAT", "PlaylowSaving"
+    )
+    analyzer.neat_analysis(
+        PlayLowSaving_vs_NEAT_log_path, groups, "PlayLowSaving", "NEAT"
+    )
 
 
 def similarities_analysis():

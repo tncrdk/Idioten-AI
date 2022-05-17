@@ -49,7 +49,7 @@ class Training:
         self.save_genome(winner_genome, save_file_name)
 
     def eval_genomes(self, genomes: neat.DefaultGenome, config: neat.Config):
-        agents = [sa.PlayLowSaveAgent1()]
+        agents = [sa.PlayLowSaveAgent()]
         for _, genome in genomes:
             self.tot_games_played = 0
             self.tot_rounds_played = 0

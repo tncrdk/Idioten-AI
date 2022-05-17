@@ -9,11 +9,11 @@ from scipy.stats import binom
 
 
 class WinrateAnalysis:
-    def neat_analysis(self, log_path: str, mode: str, first_player_name: str):
+    def neat_analysis(self, log_path: str, mode: str, agent1: str, agent2: str):
         if mode == "binomial":
-            self.neat_binomial_analysis(log_path, first_player_name)
+            self.neat_binomial_analysis(log_path, agent1, agent2)
         elif mode == "groups":
-            self.neat_groups_analysis(log_path, first_player_name)
+            self.neat_groups_analysis(log_path, agent1, agent2)
         else:
             raise Exception("Den gitte modus er ikke en modus")
 
@@ -25,7 +25,9 @@ class WinrateAnalysis:
         else:
             raise Exception("Den gitte modus er ikke en modus")
 
-    def neat_groups_analysis(self, log_path: str, first_player_name: str):
+    def neat_groups_analysis(self, log_path: str, agent1: str, agent2: str):
+        results_file_path = r".\Results\{}_vs_{}_groups.csv".format(agent1, agent2)
+
         with open(log_path, "r") as f:
             winrates = []
             while True:
@@ -39,18 +41,20 @@ class WinrateAnalysis:
 
         avg_winrate = np.average(winrates)
         stdev = stats.stdev(winrates)
-        file_path = r".\Results\{}_first_binomial_results.csv".format(first_player_name)
 
         self.save_to_csv_file(
-            file_path, [wins, avg_winrate, stdev], ["Wins", "Avg_winrate", "Stdev"]
+            results_file_path,
+            [wins, avg_winrate, stdev],
+            ["Wins", "Avg_winrate", "Stdev"],
         )
         print(f"Vinnrate: {avg_winrate}     Stdev: {stdev}")
-        self.plot_group_winrates(winrates, avg_winrate)
+        self.plot_group_winrates(winrates, avg_winrate, agent1, agent2)
 
-    def neat_binomial_analysis(self, log_path: str, first_player_name: str):
+    def neat_binomial_analysis(self, log_path: str, agent1: str, agent2: str):
         wins = 0
         games = 0
         winrates = []
+        results_file_path = r".\Results\{}_vs_{}_binom.csv".format(agent1, agent2)
 
         with open(log_path, "r") as f:
             while True:
@@ -72,15 +76,15 @@ class WinrateAnalysis:
         print(f"Stdev: {round(stdev, 2)}   Stdev (rel): {round(stdev_rel, 6)}")
         print(f"P-value: {P_value}")
 
-        file_path = r".\Results\{}_first_binomial_results.csv".format(first_player_name)
         self.save_to_csv_file(
-            file_path,
+            results_file_path,
             [wins, winrate, stdev, stdev_rel, P_value],
             ["Wins", "Winrate", "Stdev", "Relative Stdev", "P-value"],
         )
-        self.plot_binomial_winrates(winrates)
+        self.plot_binomial_winrates(winrates, agent1, agent2)
 
-    def identical_agents_binomial_analysis(self, log_path: str, agents_type: str):
+    def identical_agents_binomial_analysis(self, log_path: str, agents: str):
+        save_results_path = r".\Results\id_{}_binom.csv".format(agents)
         wins = 0
         games = 0
         winrates = []
@@ -105,15 +109,16 @@ class WinrateAnalysis:
         print(f"Stdev: {round(stdev, 2)}   Stdev (rel): {round(stdev_rel, 6)}")
         print(f"P-value: {P_value}")
 
-        file_path = r".\Results\two_{}_binomial_results.csv".format(agents_type)
         self.save_to_csv_file(
-            file_path,
+            save_results_path,
             [wins, winrate, stdev, stdev_rel, P_value],
             ["Wins", "Winrate", "Stdev", "Relative Stdev", "P-value"],
         )
-        self.plot_binomial_winrates(winrates)
+        self.plot_binomial_winrates(winrates, agents, agents)
 
     def identical_agents_groups_analysis(self, log_path: str, agents_type):
+        file_path = r".\Results\id_{}_groups.csv".format(agents_type)
+
         with open(log_path, "r") as f:
             winrates = []
             while True:
@@ -127,15 +132,14 @@ class WinrateAnalysis:
 
         avg_winrate = np.average(winrates)
         stdev = stats.stdev(winrates)
-        file_path = r".\Results\two_{}_groups_results.csv".format(agents_type)
 
         self.save_to_csv_file(
             file_path, [wins, avg_winrate, stdev], ["Wins", "Avg_winrate", "Stdev"]
         )
         print(f"Vinnrate: {avg_winrate}     Stdev: {stdev}")
-        self.plot_group_winrates(winrates, avg_winrate)
+        self.plot_group_winrates(winrates, avg_winrate, agents_type, agents_type)
 
-    def plot_binomial_winrates(self, winrates: list[float]):
+    def plot_binomial_winrates(self, winrates: list[float], agent1, agent2):
         winrates = [100 * x for x in winrates]
         plt.plot(winrates, label="Gjennomsnittlig vinnrate")
 
@@ -145,8 +149,12 @@ class WinrateAnalysis:
         plt.legend()
 
         plt.show()
+        file_path = r".\Plots\binom_{}_vs_{}.png".format(agent1, agent2)
+        plt.savefig(file_path)
 
-    def plot_group_winrates(self, winrates: list[float], avg_winrate: float):
+    def plot_group_winrates(
+        self, winrates: list[float], avg_winrate: float, agent1, agent2
+    ):
         winrates = [100 * x for x in winrates]
         plt.plot(winrates, label="Gruppe-vinnrate")
         plt.plot(
@@ -161,6 +169,8 @@ class WinrateAnalysis:
         plt.legend()
 
         plt.show()
+        file_path = r".\Plots\groups_{}_vs_{}.png".format(agent1, agent2)
+        plt.savefig(file_path)
 
     def save_to_csv_file(self, file_path: str, csv_data: list[int], headers: list[int]):
         with open(file_path, "w") as csv_file:
