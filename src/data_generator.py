@@ -11,6 +11,7 @@ class DataGenerator:
     def __init__(self, config_path, genome_path) -> None:
         self.config_path = config_path
         self.genome_path = genome_path
+        self.GROUP_SIZE = 1000
 
     def create_NEAT_agent(self, config_path, genome_path) -> na.NEAT_Agent3:
         config = neat.config.Config(
@@ -43,11 +44,11 @@ class DataGenerator:
         }
         return return_value
 
-    def run_groups(self, players, groups, group_size, save_path):
+    def run_groups(self, players, groups, save_path):
         results = {player.name: {"wins": 0, "games": 0} for player in players}
 
         for _ in range(groups):
-            result = self.run_games(group_size, players)
+            result = self.run_games(self.GROUP_SIZE, players)
             self.log_result(save_path, result)
             for player_name, data in result.items():
                 results[player_name]["wins"] += data["wins"]
@@ -55,19 +56,26 @@ class DataGenerator:
 
         self.print_results(results)
 
-    def run_neat_first(self, groups, group_size):
+    def run_neat_first(self, groups):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         static_agent = sa.PlayLowSaveAgent1()
         agents = [neat_agent, static_agent]
         SAVE_PATH = r".\Log\log_neat_first_results.txt"
-        self.run_groups(agents, groups, group_size, SAVE_PATH)
+        self.run_groups(agents, groups, SAVE_PATH)
 
-    def run_static_first(self, groups, group_size):
+    def run_static_first(self, groups):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         static_agent = sa.PlayLowSaveAgent1()
         agents = [static_agent, neat_agent]
         SAVE_PATH = r".\Log\log_static_first_results.txt"
-        self.run_groups(agents, groups, group_size, SAVE_PATH)
+        self.run_groups(agents, groups, SAVE_PATH)
+
+    def run_identical_static_agents(self, groups):
+        static_agent_1 = sa.PlayLowSaveAgent1("First")
+        static_agent_2 = sa.PlayLowSaveAgent1("Second")
+        agents = [static_agent_1, static_agent_2]
+        SAVE_PATH = r".\Log\log_two_statics_only_results.txt"
+        self.run_groups(agents, groups, SAVE_PATH)
 
     def log_result(self, file_path, result):
         with open(file_path, "a") as f:
@@ -83,7 +91,6 @@ if __name__ == "__main__":
     GENOME_PATH = r".\Winners\winner.pkl"
     CONFIG_PATH = r".\Config-files\config3.txt"
     GROUPS = 200
-    GROUP_SIZE = 1000
 
     generator = DataGenerator(CONFIG_PATH, GENOME_PATH)
-    generator.run_neat_first(GROUPS, GROUP_SIZE)
+    generator.run_identical_static_agents(GROUPS)

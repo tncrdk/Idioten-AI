@@ -7,7 +7,7 @@ def win_analysis():
     MODE = "binomial"
 
     analyzer = wa.WinRateAnalysis()
-    analyzer.analyze(LOG_WINS_PATH, MODE)
+    analyzer.neat_analysis(LOG_WINS_PATH, MODE)
 
 
 def turn_analysis():
