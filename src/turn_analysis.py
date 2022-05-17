@@ -13,7 +13,11 @@ class TurnAnalysis:
         self.group_size = group_size
         self.max_limit = max_limit
 
-    def analyze(self, mode):
+    def analyze(self, mode: str):
+        """
+        Sjekker om turene er identiske med den statiske agenten
+        linje: [runde-nr, spilt kort, spillbare kort, må spille, kort i haugen]
+        """
         if mode == "binomial":
             self.binomial_analysis()
         elif mode == "groups":
@@ -22,10 +26,6 @@ class TurnAnalysis:
             raise Exception("Det er ikke en modus")
 
     def groups_analysis(self):
-        """
-        Sjekker om turene er identiske med den statiske agenten
-        linje: [runde-nr, spilt kort, spillbare kort, må spille, kort i haugen]
-        """
         with open(self.log_path, "r") as f:
             results = []
             finished = False
@@ -40,7 +40,7 @@ class TurnAnalysis:
                         break
 
         avg = np.average(results)
-        self.plot_results(results, avg)
+        self.plot_groups_results(results, avg)
         standard_deviation = stats.stdev(results)
 
         print(
@@ -59,9 +59,8 @@ class TurnAnalysis:
                 finished = True
                 break
             datapoint = ast.literal_eval(data_str)
-
             _, played_card, playable_cards, must_play, _ = datapoint
-            playlow_move = self.playlow_agent_move(playable_cards, must_play)
+            playlow_move = self.playlowsaving_agent_policy(playable_cards, must_play)
 
             if playlow_move == played_card:
                 identical_plays += 1
@@ -79,17 +78,16 @@ class TurnAnalysis:
                 data_str = f.readline()
                 if not data_str:
                     break
-
                 _, played_card, playable_cards, must_play, _ = ast.literal_eval(
                     data_str
                 )
-                playlow_move = self.playlow_agent_move(playable_cards, must_play)
-                if playlow_move == played_card:
+                playlow_agent_move = self.playlowsaving_agent_policy(
+                    playable_cards, must_play
+                )
+                if playlow_agent_move == played_card:
                     identical_plays += 1
-
                 total_plays += 1
                 results.append((identical_plays / total_plays))
-
                 if (
                     self.max_limit
                     and (total_plays // self.group_size) >= self.max_limit
@@ -97,14 +95,14 @@ class TurnAnalysis:
                     break
 
         avg = identical_plays / total_plays
-        self.plot_binomial_results(results)
         std = math.sqrt(avg * total_plays * (1 - avg))
         std_rel = std / total_plays
 
         print(f"Identical plays: {identical_plays}    Avg: {avg}")
         print(f"Stdev: {round(std, 2)}   Stdev (rel): {round(std_rel, 6)}")
+        self.plot_binomial_results(results)
 
-    def playlow_agent_move(self, playable_cards, must_play) -> int:
+    def playlowsaving_agent_policy(self, playable_cards, must_play) -> int:
         cards_sorted = sorted(playable_cards)
         if must_play:
             for card in cards_sorted:
@@ -119,31 +117,31 @@ class TurnAnalysis:
         if len(cards_sorted) > 1:
             return cards_sorted[0]
 
-    def plot_results(self, results, avg):
+    def plot_groups_results(self, results, avg):
         results = [100 * x for x in results]
-        plt.plot(results, label="Enkeltsett")
+        plt.plot(results, label="Gruppe-verdier")
         plt.plot(
-            np.arange(len(results)), [avg * 100] * len(results), label="Gjennomsnitt"
+            np.arange(len(results)),
+            np.full(len(results), avg * 100),
+            label="Gjennomsnitt",
         )
 
-        plt.title("NEAT identisk spillestil med Statisk agent")
-
-        plt.xlabel(f"Antall sett ({self.group_size} trekk i hvert sett)")
+        plt.title("Likhet mellom NEAT-agent og PlaylowSaving-agent")
+        plt.xlabel(f"Gruppe-nummer ({self.group_size} trekk i hver gruppe)")
         plt.ylabel("Identisk (%)")
-
         plt.legend()
+
         plt.show()
 
     def plot_binomial_results(self, results):
         results = [100 * x for x in results]
-        plt.plot(results, label="Gjennomsnittlig")
+        plt.plot(results, label="Gjennomsnitt")
 
-        plt.title("NEAT identisk spillestil med Statisk agent")
-
-        plt.xlabel("Antall trekk")
+        plt.title("Likhet mellom NEAT-agent og PlaylowSaving-agent")
+        plt.xlabel("Trekk-nummer")
         plt.ylabel("Identisk (%)")
-
         plt.legend()
+
         plt.show()
 
 

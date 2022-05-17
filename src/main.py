@@ -20,6 +20,7 @@ def turn_analysis():
 
 def main():
     win_analysis()
+    turn_analysis()
 
 
 if __name__ == "__main__":
