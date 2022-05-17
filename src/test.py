@@ -1,5 +1,5 @@
-name = "a"
+var = 3
 
-a = {"a": 2, "b": 3}
-a.update({name: 3})
-print(a)
+name = r"a {}".format(var)
+
+print(name)

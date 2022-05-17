@@ -44,7 +44,7 @@ class DataGenerator:
         }
         return return_value
 
-    def run_groups(self, players, groups, save_path):
+    def run_groups(self, players: list, groups: int, save_path):
         results = {player.name: {"wins": 0, "games": 0} for player in players}
 
         for _ in range(groups):
@@ -56,21 +56,19 @@ class DataGenerator:
 
         self.print_results(results)
 
-    def run_neat_first(self, groups):
+    def run_neat_first(self, groups: int, static_agent):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
-        static_agent = sa.PlayLowSaveAgent1()
         agents = [neat_agent, static_agent]
-        SAVE_PATH = r".\Log\log_neat_first_results.txt"
+        SAVE_PATH = r".\Log\log_neat_first_vs_{}_results.txt".format(static_agent.name)
         self.run_groups(agents, groups, SAVE_PATH)
 
-    def run_static_first(self, groups):
+    def run_static_first(self, groups: int, static_agent):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
-        static_agent = sa.PlayLowSaveAgent1()
         agents = [static_agent, neat_agent]
-        SAVE_PATH = r".\Log\log_static_first_results.txt"
+        SAVE_PATH = r".\Log\log_{}_first_vs_NEAT_results.txt".format(static_agent.name)
         self.run_groups(agents, groups, SAVE_PATH)
 
-    def run_identical_static_agents(self, groups):
+    def run_identical_static_agents(self, groups: int):
         static_agent_1 = sa.PlayLowSaveAgent1("First")
         static_agent_2 = sa.PlayLowSaveAgent1("Second")
         agents = [static_agent_1, static_agent_2]
@@ -90,7 +88,8 @@ class DataGenerator:
 if __name__ == "__main__":
     GENOME_PATH = r".\Winners\winner.pkl"
     CONFIG_PATH = r".\Config-files\config3.txt"
-    GROUPS = 200
+    GROUPS = 300
+    static_agent = sa.PlayLowAgent1()
 
     generator = DataGenerator(CONFIG_PATH, GENOME_PATH)
-    generator.run_identical_static_agents(GROUPS)
+    generator.run_static_first(GROUPS, static_agent)

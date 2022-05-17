@@ -1,5 +1,6 @@
 import ast
 import math
+import csv
 import statistics as stats
 import matplotlib.pyplot as plt
 import numpy as np
@@ -41,12 +42,11 @@ class SimilaritiesAnalysis:
 
         avg = np.average(results)
         self.plot_groups_results(results, avg)
-        standard_deviation = stats.stdev(results)
+        stdev = stats.stdev(results)
 
-        print(
-            f"Gjennomsnitt: {round(avg, 3)}     Stdev: {round(standard_deviation, 10)}"
-        )
-        return avg, standard_deviation
+        print(f"Gjennomsnitt: {round(avg, 3)}     Stdev: {round(stdev, 10)}")
+        file_path = r".\Results\sim_groups_analysis.csv"
+        self.save_to_csv_file(file_path, [avg, stdev], ["Avg", "Stdev"])
 
     def analyze_group(self, file_object):
         total_plays = 0
@@ -95,11 +95,18 @@ class SimilaritiesAnalysis:
                     break
 
         avg = identical_plays / total_plays
-        std = math.sqrt(avg * total_plays * (1 - avg))
-        std_rel = std / total_plays
+        stdev = math.sqrt(avg * total_plays * (1 - avg))
+        stdev_rel = stdev / total_plays
 
         print(f"Identical plays: {identical_plays}    Avg: {avg}")
-        print(f"Stdev: {round(std, 2)}   Stdev (rel): {round(std_rel, 6)}")
+        print(f"Stdev: {round(stdev, 2)}   Stdev (rel): {round(stdev_rel, 6)}")
+
+        file_path = r".\Results\sim_groups_analysis.csv"
+        self.save_to_csv_file(
+            file_path,
+            [identical_plays, avg, stdev, stdev_rel],
+            ["Identical plays", "Avg", "Stdev", "Relative Stdev"],
+        )
         self.plot_binomial_results(results)
 
     def playlowsaving_agent_policy(self, playable_cards, must_play) -> int:
@@ -143,6 +150,12 @@ class SimilaritiesAnalysis:
         plt.legend()
 
         plt.show()
+
+    def save_to_csv_file(self, file_path: str, csv_data: list[int], headers: list[int]):
+        with open(file_path, "w") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(headers)
+            writer.writerow(csv_data)
 
 
 if __name__ == "__main__":

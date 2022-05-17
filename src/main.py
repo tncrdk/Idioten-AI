@@ -3,14 +3,21 @@ import winrate_analysis as wa
 
 
 def win_analysis():
-    LOG_WINS_PATH = r".\Log\log_neat_first_results.txt"
-    MODE = "binomial"
+    binomial = "binomial"
+    groups = "groups"
+    neat_first_PlayLowSaving_log_path = r".\Log\log_neat_first_results.txt"
+    static_first_PlayLowSaving_log_path = r".\Log\log_static_first_results.txt"
 
-    analyzer = wa.WinrateAnalysis(LOG_WINS_PATH)
-    analyzer.neat_analysis(MODE)
+    analyzer = wa.WinrateAnalysis()
+    analyzer.neat_analysis(neat_first_PlayLowSaving_log_path, binomial, "NEAT")
+    # analyzer.neat_analysis(
+    #     static_first_PlayLowSaving_log_path, binomial, "PlayLowSaving"
+    # )
+    # analyzer.neat_analysis(neat_first_PlayLowSaving_log_path, groups, "NEAT")
+    # analyzer.neat_analysis(static_first_PlayLowSaving_log_path, groups, "PlayLowSaving")
 
 
-def turn_analysis():
+def similarities_analysis():
     LOG_TURNS_PATH = r".\Log\log_turns.txt"
     MODE = "binomial"
 
@@ -20,7 +27,8 @@ def turn_analysis():
 
 def main():
     win_analysis()
-    # turn_analysis()
+    print("-" * 10)
+    similarities_analysis()
 
 
 if __name__ == "__main__":
