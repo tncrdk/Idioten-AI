@@ -25,6 +25,7 @@ class SimilaritiesAnalysis:
             self.groups_analysis()
         else:
             raise Exception("Den gitte modus er ikke en modus")
+        print("-" * 10)
 
     def groups_analysis(self):
         with open(self.log_path, "r") as f:
@@ -138,7 +139,11 @@ class SimilaritiesAnalysis:
         plt.ylabel("Identisk (%)")
         plt.legend()
 
-        plt.show()
+        file_path = r".\Plots\sim_binom_{}_{}.png".format(
+            self.group_size, self.max_limit
+        )
+        plt.savefig(file_path)
+        plt.clf()
 
     def plot_binomial_results(self, results):
         results = [100 * x for x in results]
@@ -149,7 +154,11 @@ class SimilaritiesAnalysis:
         plt.ylabel("Identisk (%)")
         plt.legend()
 
-        plt.show()
+        file_path = r".\Plots\sim_groups_{}_{}.png".format(
+            self.group_size, self.max_limit
+        )
+        plt.savefig(file_path)
+        plt.clf()
 
     def save_to_csv_file(self, file_path: str, csv_data: list[int], headers: list[int]):
         with open(file_path, "w") as csv_file:

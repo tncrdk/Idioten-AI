@@ -59,7 +59,7 @@ class DataGenerator:
     def run_neat_first(self, groups: int, static_agent):
         neat_agent = self.create_NEAT_agent(self.config_path, self.genome_path)
         agents = [neat_agent, static_agent]
-        SAVE_PATH = r".\Log\log_neat_vs_{}.txt".format(static_agent.name)
+        SAVE_PATH = r".\Log\log_NEAT_vs_{}.txt".format(static_agent.name)
         self.run_groups(agents, groups, SAVE_PATH)
 
     def run_static_first(self, groups: int, static_agent):
@@ -88,8 +88,8 @@ class DataGenerator:
 if __name__ == "__main__":
     GENOME_PATH = r".\Winners\winner.pkl"
     CONFIG_PATH = r".\Config-files\config3.txt"
-    GROUPS = 100
-    static_agent = sa.PlayHighAgent()
+    GROUPS = 300
+    static_agent = sa.PlayLowAgent()
 
     generator = DataGenerator(CONFIG_PATH, GENOME_PATH)
-    generator.run_static_first(GROUPS, static_agent)
+    generator.run_neat_first(GROUPS, static_agent)
