@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-class TurnAnalysis:
+class SimilaritiesAnalysis:
     def __init__(
         self, log_path: str, group_size: int, max_limit: int | None = None
     ) -> None:
@@ -23,7 +23,7 @@ class TurnAnalysis:
         elif mode == "groups":
             self.groups_analysis()
         else:
-            raise Exception("Det er ikke en modus")
+            raise Exception("Den gitte modus er ikke en modus")
 
     def groups_analysis(self):
         with open(self.log_path, "r") as f:

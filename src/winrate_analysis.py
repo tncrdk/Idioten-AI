@@ -6,7 +6,7 @@ import numpy as np
 from scipy.stats import binom
 
 
-class WinRateAnalysis:
+class WinrateAnalysis:
     def __init__(self, log_path: str) -> None:
         self.log_path = log_path
 
@@ -16,7 +16,15 @@ class WinRateAnalysis:
         elif mode == "groups":
             self.neat_groups_analysis()
         else:
-            raise Exception("Det er ikke en modus")
+            raise Exception("Den gitte modus er ikke en modus")
+
+    def identical_agents_analysis(self, mode):
+        if mode == "binomial":
+            self.identical_agents_binomial_analysis()
+        elif mode == "groups":
+            self.identical_agents_groups_analysis()
+        else:
+            raise Exception("Den gitte modus er ikke en modus")
 
     def neat_groups_analysis(self):
         with open(self.log_path, "r") as f:
@@ -62,7 +70,7 @@ class WinRateAnalysis:
         print(f"P-value: {P_value}")
         self.plot_binomial_winrates(winrates)
 
-    def identical_agents_analysis(self):
+    def identical_agents_binomial_analysis(self):
         wins = 0
         games = 0
         winrates = []
@@ -88,12 +96,30 @@ class WinRateAnalysis:
         print(f"P-value: {P_value}")
         self.plot_binomial_winrates(winrates)
 
+    def identical_agents_groups_analysis(self):
+        with open(self.log_path, "r") as f:
+            winrates = []
+            while True:
+                data_str = f.readline().strip()  # Hver linje er en gruppe på 1000 spill
+                if not data_str:
+                    break
+                datapoint = ast.literal_eval(data_str)
+                wins = datapoint.get("First").get("wins")
+                games = datapoint.get("First").get("games")
+                winrates.append((wins / games))
+
+        avg_winrate = np.average(winrates)
+        standard_deviation = stats.stdev(winrates)
+
+        print(f"Vinnrate: {avg_winrate}     Stdev: {standard_deviation}")
+        self.plot_group_winrates(winrates, avg_winrate)
+
     def plot_binomial_winrates(self, winrates):
         winrates = [100 * x for x in winrates]
-        plt.plot(winrates, label="Gjennomsnitt")
+        plt.plot(winrates, label="Gjennomsnittlig vinnrate")
 
-        plt.title("NEAT-agent vinnrate")
-        plt.xlabel("Grupper (1000 spill i hver gruppe)")
+        plt.title("Vinnrate-utvikling")
+        plt.xlabel("Grupper analysert (1000 spill i hver gruppe)")
         plt.ylabel("Vinnrate (%)")
         plt.legend()
 
@@ -107,10 +133,12 @@ class WinRateAnalysis:
             np.full(len(winrates), avg_winrate * 100),
             label="Gjennomsnitt",
         )
-        plt.title("NEAT-agent vinnrate")
+
+        plt.title("Vinnrate")
         plt.xlabel("Gruppe-nummer (1000 spill i hver gruppe)")
         plt.ylabel("Vinnrate (%)")
         plt.legend()
+
         plt.show()
 
     @classmethod
