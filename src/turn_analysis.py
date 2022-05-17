@@ -6,17 +6,27 @@ import numpy as np
 
 
 class TurnAnalysis:
-    def __init__(self, group_size) -> None:
+    def __init__(
+        self, log_path: str, group_size: int, max_limit: int | None = None
+    ) -> None:
+        self.log_path = log_path
         self.group_size = group_size
+        self.max_limit = max_limit
 
-    def analyze_turns_in_groups(
-        self, turns_log_path: str, max_limit: int | None = None
-    ):
+    def analyze(self, mode):
+        if mode == "binomial":
+            self.binomial_analysis()
+        elif mode == "groups":
+            self.groups_analysis()
+        else:
+            raise Exception("Det er ikke en modus")
+
+    def groups_analysis(self):
         """
         Sjekker om turene er identiske med den statiske agenten
         linje: [runde-nr, spilt kort, spillbare kort, må spille, kort i haugen]
         """
-        with open(turns_log_path, "r") as f:
+        with open(self.log_path, "r") as f:
             results = []
             finished = False
             i = 0
@@ -24,9 +34,9 @@ class TurnAnalysis:
             while not finished:
                 finished, result = self.analyze_group(f)
                 results.append(result)
-                if max_limit:
+                if self.max_limit:
                     i += 1
-                    if i > max_limit:
+                    if i > self.max_limit:
                         break
 
         avg = np.average(results)
@@ -59,12 +69,12 @@ class TurnAnalysis:
 
         return finished, identical_plays / total_plays
 
-    def analyze_turns_binomial(self, log_path: str, max_limit: int | None = None):
+    def binomial_analysis(self):
         identical_plays = 0
         total_plays = 0
         results = []
 
-        with open(log_path, "r") as f:
+        with open(self.log_path, "r") as f:
             while True:
                 data_str = f.readline()
                 if not data_str:
@@ -80,7 +90,10 @@ class TurnAnalysis:
                 total_plays += 1
                 results.append((identical_plays / total_plays))
 
-                if max_limit and total_plays // self.group_size >= max_limit:
+                if (
+                    self.max_limit
+                    and (total_plays // self.group_size) >= self.max_limit
+                ):
                     break
 
         avg = identical_plays / total_plays
@@ -135,8 +148,4 @@ class TurnAnalysis:
 
 
 if __name__ == "__main__":
-    LOG_TURNS_PATH = r".\Log\log_turns.txt"
-    LOG_WINS_PATH = r".\Log\log_neat_first_results.txt"
-
-    analyzer = TurnAnalysis(1000)
-    analyzer.analyze_turns_in_groups(LOG_TURNS_PATH, 100)
+    pass
