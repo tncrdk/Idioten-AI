@@ -1,4 +1,3 @@
-from asyncore import write
 import math
 import ast
 import csv
@@ -48,9 +47,12 @@ class WinrateAnalysis:
         avg_winrate = np.average(winrates)
         stdev = stats.stdev(winrates)
 
+        avg_winrate = round(avg_winrate, 4)
+        stdev = round(stdev, 2)
+
         self.save_to_csv_file(
             results_file_path,
-            [f"{agent1} | {agent2}", avg_winrate, stdev],
+            [f"{agent1} | {agent2}", f"{avg_winrate*100}%", stdev],
             ["Agents", "Avg_winrate", "Stdev"],
         )
         print(f"Vinnrate: {avg_winrate}     Stdev: {stdev}")
@@ -75,16 +77,29 @@ class WinrateAnalysis:
         winrate = wins / games
         winrate_variance = winrate * (1 - winrate) * games  # V = n*p*(1-p)
         stdev = math.sqrt(winrate_variance)
-        stdev_rel = stdev / games
+        stdev_rel = stdev / wins
         P_value = self.get_P_value(winrate, games, math.ceil(games / 2))
 
-        print(f"Wins: {wins}    Winrate: {round(winrate, 6)}")
-        print(f"Stdev: {round(stdev, 2)}   Stdev (rel): {round(stdev_rel, 6)}")
+        winrate = round(winrate, 4)
+        stdev = round(stdev, 2)
+        stdev_rel = round(stdev_rel, 4)
+        P_value = round(P_value, 3)
+
+        print(f"Wins: {wins}    Winrate: {winrate}")
+        print(f"Stdev: {stdev}   Stdev (rel): {stdev_rel}")
         print(f"P-value: {P_value}")
 
         self.save_to_csv_file(
             results_file_path,
-            [f"{agent1} | {agent2}", wins, winrate, stdev, stdev_rel, P_value],
+            [
+                f"{agent1} | {agent2}",
+                wins,
+                games,
+                f"{winrate*100}%",
+                stdev,
+                f"{stdev_rel*100}%",
+                P_value,
+            ],
             ["Agents", "Wins", "Winrate", "Stdev", "Relative Stdev", "P-value"],
         )
         self.plot_binomial_winrates(winrates, agent1, agent2)
@@ -108,16 +123,29 @@ class WinrateAnalysis:
         winrate = wins / games
         winrate_variance = winrate * (1 - winrate) * games  # V = n*p*(1-p)
         stdev = math.sqrt(winrate_variance)
-        stdev_rel = stdev / games
+        stdev_rel = stdev / wins
         P_value = 1 - self.get_P_value(winrate, games, math.ceil(games / 2))
 
-        print(f"Wins: {wins}    Winrate: {round(winrate, 6)}")
-        print(f"Stdev: {round(stdev, 2)}   Stdev (rel): {round(stdev_rel, 6)}")
+        winrate = round(winrate, 4)
+        stdev = round(stdev, 2)
+        stdev_rel = round(stdev_rel, 4)
+        P_value = round(P_value, 3)
+
+        print(f"Wins: {wins}    Winrate: {winrate}")
+        print(f"Stdev: {stdev}   Stdev (rel): {stdev_rel}")
         print(f"P-value: {P_value}")
 
         self.save_to_csv_file(
             save_results_path,
-            [f"{agents} | {agents}", wins, winrate, stdev, stdev_rel, P_value],
+            [
+                f"{agents} | {agents}",
+                wins,
+                games,
+                f"{winrate*100}%",
+                stdev,
+                f"{stdev_rel*100}%",
+                P_value,
+            ],
             ["Agents", "Wins", "Winrate", "Stdev", "Relative Stdev", "P-value"],
         )
         self.plot_binomial_winrates(winrates, agents, agents)
@@ -139,9 +167,12 @@ class WinrateAnalysis:
         avg_winrate = np.average(winrates)
         stdev = stats.stdev(winrates)
 
+        avg_winrate = round(avg_winrate, 4)
+        stdev = round(stdev, 2)
+
         self.save_to_csv_file(
             file_path,
-            [f"{agents} | {agents}", avg_winrate, stdev],
+            [f"{agents} | {agents}", f"{avg_winrate*100}%", stdev],
             ["Agents", "Avg_winrate", "Stdev"],
         )
         print(f"Vinnrate: {avg_winrate}     Stdev: {stdev}")
