@@ -89,7 +89,7 @@ if __name__ == "__main__":
     GENOME_PATH = r".\Winners\winner.pkl"
     CONFIG_PATH = r".\Config-files\config3.txt"
     GROUPS = 300
-    static_agent = sa.PlayLowAgent()
+    static_agent = sa.RandomAgent()
 
     generator = DataGenerator(CONFIG_PATH, GENOME_PATH)
     generator.run_neat_first(GROUPS, static_agent)

@@ -1,5 +1,4 @@
-var = 3
+from scipy.stats import binom
 
-name = r"a {}".format(var)
-
-print(name)
+a = binom.cdf(51000, 100000, 0.5)
+print(a)

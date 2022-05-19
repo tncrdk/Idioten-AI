@@ -45,10 +45,10 @@ class WinrateAnalysis:
                 winrates.append((wins / games))
 
         avg_winrate = np.average(winrates)
-        stdev = stats.stdev(winrates)
+        stdev = stats.stdev(winrates) / math.sqrt(games)
 
         avg_winrate = round(avg_winrate, 4)
-        stdev = round(stdev, 2)
+        stdev = round(stdev, 4)
 
         self.save_to_csv_file(
             results_file_path,
@@ -78,7 +78,10 @@ class WinrateAnalysis:
         winrate_variance = winrate * (1 - winrate) * games  # V = n*p*(1-p)
         stdev = math.sqrt(winrate_variance)
         stdev_rel = stdev / wins
-        P_value = self.get_P_value(winrate, games, math.ceil(games / 2))
+        if winrate <= 0.5:
+            P_value = self.get_P_value(wins, games, 0.5)
+        elif winrate > 0.5:
+            P_value = 1 - self.get_P_value(wins, games, 0.5)
 
         winrate = round(winrate, 4)
         stdev = round(stdev, 2)
@@ -124,7 +127,10 @@ class WinrateAnalysis:
         winrate_variance = winrate * (1 - winrate) * games  # V = n*p*(1-p)
         stdev = math.sqrt(winrate_variance)
         stdev_rel = stdev / wins
-        P_value = 1 - self.get_P_value(winrate, games, math.ceil(games / 2))
+        if winrate <= 0.5:
+            P_value = self.get_P_value(wins, games, 0.5)
+        elif winrate > 0.5:
+            P_value = 1 - self.get_P_value(wins, games, 0.5)
 
         winrate = round(winrate, 4)
         stdev = round(stdev, 2)
@@ -165,10 +171,10 @@ class WinrateAnalysis:
                 winrates.append((wins / games))
 
         avg_winrate = np.average(winrates)
-        stdev = stats.stdev(winrates)
+        stdev = stats.stdev(winrates) / math.sqrt(games)
 
         avg_winrate = round(avg_winrate, 4)
-        stdev = round(stdev, 2)
+        stdev = round(stdev, 4)
 
         self.save_to_csv_file(
             file_path,
@@ -217,10 +223,8 @@ class WinrateAnalysis:
             writer.writerow(headers + csv_data)
 
     @classmethod
-    def get_P_value(cls, probability, population_size, criteria):
-        p_value = 1 - binom.cdf(
-            population_size - criteria - 1, population_size, probability
-        )
+    def get_P_value(cls, criteria, population_size, probability):
+        p_value = binom.cdf(criteria, population_size, probability)
         return p_value
 
 

@@ -16,6 +16,8 @@ def win_analysis():
 
     id_PlayLowSaving = r".\Log\log_id_PlayLowSaving.txt"
 
+    NEAT_vs_Random = r".\Log\log_NEAT_vs_Random.txt"
+
     analyzer = wa.WinrateAnalysis()
 
     analyzer.neat_analysis(NEAT_vs_PlayLowSaving, binomial, "NEAT", "PlaylowSaving")
@@ -30,6 +32,9 @@ def win_analysis():
 
     analyzer.neat_analysis(PlayHigh_vs_NEAT, binomial, "PlayHigh", "NEAT")
     analyzer.neat_analysis(PlayHigh_vs_NEAT, groups, "PlayHigh", "NEAT")
+
+    analyzer.neat_analysis(NEAT_vs_Random, binomial, "NEAT", "Random")
+    analyzer.neat_analysis(NEAT_vs_Random, groups, "NEAT", "Random")
 
     analyzer.identical_agents_analysis(id_PlayLowSaving, binomial, "PlayLowSaving")
     analyzer.identical_agents_analysis(id_PlayLowSaving, groups, "PlayLowSaving")
