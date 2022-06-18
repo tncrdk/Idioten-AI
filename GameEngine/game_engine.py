@@ -169,7 +169,7 @@ class AgentGame(AbstactGame):
                 if game_finished:
                     break
 
-        if bool(standings):
+        if standings:
             return standings[0].policy, turns_played
         else:
             return None, turns_played

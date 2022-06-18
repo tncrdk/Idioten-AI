@@ -285,7 +285,7 @@ class AgentTurn(AbstractTurn):
         may_build = False
 
         if not can_play:
-            self.can_not_play_actions(playable_cards, must_play)
+            self.can_not_play_actions()
 
         while (must_play or may_build) and can_play:
             self.show_player_info(playable_cards, must_play)
@@ -313,7 +313,7 @@ class AgentTurn(AbstractTurn):
     ACTIONS
     """
 
-    def can_not_play_actions(self, playable_cards: list, must_play) -> None:
+    def can_not_play_actions(self) -> None:
         self.take_pile()
 
     def take_visible_table_cards(self) -> None:
