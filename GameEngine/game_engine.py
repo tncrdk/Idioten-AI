@@ -2,7 +2,6 @@ import deck
 import player
 import turn
 import card_switch as cs
-import static_agents as sa
 
 
 # TODO Lage en resultatliste
@@ -173,9 +172,3 @@ class AgentGame(AbstactGame):
             return standings[0].policy, turns_played
         else:
             return None, turns_played
-
-
-if __name__ == "__main__":
-    agents = [sa.PlayLowAgent(), sa.PlayHighAgent()]
-    main_game = AgentGame(agents=agents)
-    main_game.run_game()
